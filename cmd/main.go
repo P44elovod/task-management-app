@@ -1,7 +1,27 @@
 package main
 
-import "fmt"
+import (
+	"flag"
+	"log"
+
+	"github.com/P44elovod/task-management-app/app/apiserver"
+	"github.com/P44elovod/task-management-app/config"
+)
+
+var (
+	configPath string
+)
+
+func init() {
+	flag.StringVar(&configPath, "config-path", "./", "config file path")
+}
 
 func main() {
-	fmt.Println("start")
+	config, err := config.LoadConfig(configPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	apiserver.Start(config)
+
 }
