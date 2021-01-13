@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/P44elovod/task-management-app/config"
+
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 )
@@ -15,7 +16,7 @@ type Server struct {
 	router *mux.Router
 }
 
-func newServer(config *config.Config) *Server {
+func (s *Server) newServer(config *config.Config) *Server {
 	return &Server{
 		config: config,
 		logger: logrus.New(),
@@ -35,6 +36,7 @@ func (s *Server) start() error {
 }
 
 func (s *Server) configureRouter() {
+	// _projectMain.InitProject(s.router)
 	s.router.HandleFunc("/", s.handleHello())
 
 }

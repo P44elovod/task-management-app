@@ -17,11 +17,13 @@ func init() {
 }
 
 func main() {
+	a := apiserver.Api{}
+
 	config, err := config.LoadConfig(configPath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	apiserver.Start(config)
+	a.Start(config)
 
 }

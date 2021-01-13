@@ -5,5 +5,9 @@ type Project struct {
 	Name string
 }
 
-type ProjectUseCase interface{}
-type ProjectRepository interface{}
+type ProjectUseCase interface {
+	Fetch()
+}
+type ProjectRepository interface {
+	Fetch()
+}
