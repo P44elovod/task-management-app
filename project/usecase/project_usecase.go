@@ -18,5 +18,29 @@ func NewArticleUsecase(pr domain.ProjectRepository) domain.ProjectUseCase {
 
 func (p *projectUsecase) Fetch() {
 	fmt.Println("Project USecase Fetch")
-	p.projectRepo.Fetch()
+	p.projectRepo.FetchProjectByID()
+}
+
+func (p *projectUsecase) CreateProject() (uint, error) {
+	return 0, nil
+}
+
+func (p *projectUsecase) FetchAllProjects() ([]domain.Project, error) {
+	return nil, nil
+}
+
+func (p *projectUsecase) FetchProjectByID() (domain.Project, error) {
+	return domain.Project{}, nil
+}
+
+func (p *projectUsecase) DeleteProject() error {
+	return nil
+}
+
+func (p *projectUsecase) DeleteAllProjects() error {
+	return nil
+}
+
+func (p *projectUsecase) UpdateProject() (uint, error) {
+	return 0, nil
 }

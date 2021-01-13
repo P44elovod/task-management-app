@@ -36,7 +36,6 @@ func (s *Server) start() error {
 }
 
 func (s *Server) configureRouter() {
-	// _projectMain.InitProject(s.router)
 	s.router.HandleFunc("/", s.handleHello())
 
 }

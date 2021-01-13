@@ -28,7 +28,7 @@ func New(r *mux.Router, pu domain.ProjectUseCase) {
 func (p *ProjectHandler) Fetch() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		p.PUsecase.Fetch()
+		p.PUsecase.FetchAll()
 		fmt.Fprintf(w, "fetch project handler")
 	}
 
