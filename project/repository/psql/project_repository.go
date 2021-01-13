@@ -15,15 +15,11 @@ func NewPsqlProjectleRepository(Conn *sql.DB) domain.ProjectRepository {
 	return &psqlProjectRepository{Conn}
 }
 
-func (p *psqlProjectRepository) FetchProjectByID() (domain.Project, error) {
-	fmt.Println("psqlProjectRepository fetch")
-	return domain.Project{}, nil
-}
-
 func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
 	return nil, nil
 }
 func (p *psqlProjectRepository) FetchProjectByID() (domain.Project, error) {
+	fmt.Println("psqlProjectRepository fetch")
 	return domain.Project{}, nil
 }
 func (p *psqlProjectRepository) StoreProject() (uint, error) {
