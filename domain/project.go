@@ -1,13 +1,14 @@
 package domain
 
 type Project struct {
-	ID   uint
-	Name string
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }
 
 type ProjectUseCase interface {
 	CreateProject() (uint, error)
-	FetchAllProjects() ([]Project, error)
+	FetchAllProjects() ([]byte, error)
 	FetchProjectByID() (Project, error)
 	DeleteProject() error
 	DeleteAllProjects() error

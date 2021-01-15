@@ -6,6 +6,7 @@
 *.dylib
 *.env
 *.toml
+*.http
 
 # Test binary, built with `go test -c`
 *.test

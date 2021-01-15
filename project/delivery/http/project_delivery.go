@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/P44elovod/task-management-app/domain"
+	"github.com/P44elovod/task-management-app/helpers"
 	"github.com/gorilla/mux"
 )
 
@@ -28,8 +29,10 @@ func New(r *mux.Router, pu domain.ProjectUseCase) {
 func (p *ProjectHandler) Fetch() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		p.PUsecase.FetchAllProjects()
-		fmt.Fprintf(w, "fetch project handler")
+		projectList, err := p.PUsecase.FetchAllProjects()
+		helpers.FailOnError(err, "!!!!!!!!")
+
+		fmt.Fprintf(w, string(projectList))
 	}
 
 }

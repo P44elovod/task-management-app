@@ -3,8 +3,14 @@ package domain
 type Comment struct {
 	ID     uint
 	TaskID uint
-	Body   string
+	Text   string
 }
 
-type CommentUseCase interface{}
+type CommentUseCase interface {
+	// CreateComment()
+	// UpdateCommentByID()
+	// DeleteCommetByID()
+	// FetchAllCometsByTaskID ()
+
+}
 type CommentRepository interface{}

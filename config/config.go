@@ -9,6 +9,7 @@ import (
 type Config struct {
 	ServerPort string `mapstructure:"server_port"`
 	LogLevel   string `mapstructure:"log_level"`
+	DBUrl      string `mapstructure:"db_url"`
 }
 
 func NewConfig() *Config {

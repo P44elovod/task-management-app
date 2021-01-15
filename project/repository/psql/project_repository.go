@@ -5,20 +5,38 @@ import (
 	"fmt"
 
 	"github.com/P44elovod/task-management-app/domain"
+	"github.com/P44elovod/task-management-app/helpers"
 )
 
 type psqlProjectRepository struct {
-	Conn *sql.DB
+	db *sql.DB
 }
 
-func NewPsqlProjectleRepository(Conn *sql.DB) domain.ProjectRepository {
-	return &psqlProjectRepository{Conn}
+func NewPsqlProjectleRepository(db *sql.DB) domain.ProjectRepository {
+	return &psqlProjectRepository{db}
 }
 
 func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
-	return nil, nil
+	rows, err := p.db.Query("SELECT id, name, description FROM project")
+	if err != nil {
+		helpers.FailOnError(err, "DB query processing went wrong!")
+		return nil, err
+	}
+	var progectList []domain.Project
+	for rows.Next() {
+		project := domain.Project{}
+		err = rows.Scan(&project.ID, &project.Name, &project.Description)
+		if err != nil {
+			helpers.FailOnError(err, "DB row deserialization went wrong!")
+			return nil, err
+		}
+
+		progectList = append(progectList, project)
+	}
+	return progectList, nil
 }
 func (p *psqlProjectRepository) FetchProjectByID() (domain.Project, error) {
+
 	fmt.Println("psqlProjectRepository fetch")
 	return domain.Project{}, nil
 }

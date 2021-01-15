@@ -8,5 +8,12 @@ type Task struct {
 	Description string
 }
 
-type TaskUseCase interface{}
+type TaskUseCase interface {
+	// CreateTask()
+	// UpdateTaskByID()
+	// DeleteTaskByID()
+	// FetchTaskByID()
+	// FetchTasksByColumnID()
+
+}
 type TaskRepository interface{}
