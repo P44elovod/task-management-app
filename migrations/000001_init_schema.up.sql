@@ -31,7 +31,7 @@ CREATE TABLE "task" (
 CREATE TABLE "comment" (
   "id" bigserial UNIQUE PRIMARY KEY NOT NULL,
   "name" varchar(500) NOT NULL,
-  "description" varchar(5000),
+  "description" varchar(5000) NOT NULL,
   "task_id" bigint,
   "created_at" timestamp NOT NULL DEFAULT (now()),
   "updated_at" timestamp,

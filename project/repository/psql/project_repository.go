@@ -35,7 +35,7 @@ func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
 	}
 	return progectList, nil
 }
-func (p *psqlProjectRepository) FetchProjectByID() (domain.Project, error) {
+func (p *psqlProjectRepository) GetProjectByID() (domain.Project, error) {
 
 	fmt.Println("psqlProjectRepository fetch")
 	return domain.Project{}, nil

@@ -11,7 +11,7 @@ import (
 
 func InitProject(r *mux.Router, db *sql.DB) {
 	pr := _pRepository.NewPsqlProjectleRepository(db)
-	pu := _pUsecase.NewArticleUsecase(pr)
+	pu := _pUsecase.NewProjectUsecase(pr)
 
 	_pHttpDelivery.New(r, pu)
 }
