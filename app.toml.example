@@ -2,10 +2,4 @@
 server_port = ":port"
 log_level = ""
 
-
-db_host = ""
-db_port = "port"
-db_name = ""
-db_user = ""
-db_pass = ""
-ssl_mode = ""
+db_url = "host= port= dbname= user= password= sslmode="
