@@ -7,8 +7,8 @@ type Project struct {
 }
 
 type ProjectUseCase interface {
-	CreateProject() (uint, error)
-	FetchAllProjects() (string, error)
+	CreateProject(project *Project) error
+	FetchAllProjects() ([]Project, error)
 	GetProjectByID() (Project, error)
 	DeleteProject() error
 	DeleteAllProjects() error
@@ -17,7 +17,7 @@ type ProjectUseCase interface {
 type ProjectRepository interface {
 	FetchAllProjects() ([]Project, error)
 	GetProjectByID() (Project, error)
-	StoreProject() (uint, error)
+	StoreProject(project *Project) error
 	UpdateProject() (uint, error)
 	DeleteAllProjects() error
 	DeleteProject() error

@@ -17,7 +17,7 @@ func NewPsqlProjectleRepository(db *sql.DB) domain.ProjectRepository {
 }
 
 func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
-	rows, err := p.db.Query("SELECT id, name, description FROM project")
+	rows, err := p.db.Query("SELECT id, name, description FROM project ORDER BY name")
 	if err != nil {
 		helpers.FailOnError(err, "DB query processing went wrong!")
 		return nil, err
@@ -35,14 +35,26 @@ func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
 	}
 	return progectList, nil
 }
-func (p *psqlProjectRepository) GetProjectByID() (domain.Project, error) {
 
-	fmt.Println("psqlProjectRepository fetch")
-	return domain.Project{}, nil
+func (p *psqlProjectRepository) StoreProject(project *domain.Project) error {
+
+	tx, err := p.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	stmt, err := tx.Prepare("INSERT INTO project (name, description) VALUES ($1, $2) RETURNING id")
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	defer stmt.Close()
+
+	stmt.QueryRow(project.Name, project.Description).Scan(&project.ID)
+
+	return tx.Commit()
 }
-func (p *psqlProjectRepository) StoreProject() (uint, error) {
-	return 0, nil
-}
+
 func (p *psqlProjectRepository) UpdateProject() (uint, error) {
 	return 0, nil
 }
@@ -51,4 +63,10 @@ func (p *psqlProjectRepository) DeleteAllProjects() error {
 }
 func (p *psqlProjectRepository) DeleteProject() error {
 	return nil
+}
+
+func (p *psqlProjectRepository) GetProjectByID() (domain.Project, error) {
+
+	fmt.Println("psqlProjectRepository fetch")
+	return domain.Project{}, nil
 }

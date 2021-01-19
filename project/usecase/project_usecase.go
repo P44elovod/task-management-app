@@ -1,9 +1,7 @@
 package projectusecase
 
 import (
-	"encoding/json"
 	"fmt"
-	"sort"
 
 	"github.com/P44elovod/task-management-app/domain"
 )
@@ -23,23 +21,22 @@ func (p *projectUsecase) Fetch() {
 	p.projectRepo.GetProjectByID()
 }
 
-func (p *projectUsecase) CreateProject() (uint, error) {
-	return 0, nil
+func (p *projectUsecase) CreateProject(project *domain.Project) error {
+	err := p.projectRepo.StoreProject(project)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (p *projectUsecase) FetchAllProjects() (string, error) {
+func (p *projectUsecase) FetchAllProjects() ([]domain.Project, error) {
 
 	projectsList, err := p.projectRepo.FetchAllProjects()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	sort.Slice(projectsList, func(i, j int) bool {
-		return projectsList[i].Name < projectsList[j].Name
-	})
 
-	jList, err := json.Marshal(projectsList)
-
-	return string(jList), nil
+	return projectsList, nil
 }
 
 func (p *projectUsecase) GetProjectByID() (domain.Project, error) {
