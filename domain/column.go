@@ -15,4 +15,5 @@ type ColumnUsecase interface {
 }
 type ColumnRepository interface {
 	StoreColumn(column *Column) error
+	CheckColumnNameExists(name string) bool
 }

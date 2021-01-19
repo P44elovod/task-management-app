@@ -7,27 +7,33 @@ import (
 )
 
 type projectUsecase struct {
-	projectRepo domain.ProjectRepository
+	projectRepo   domain.ProjectRepository
+	columnUsecase domain.ColumnUsecase
 }
 
 func NewProjectUsecase(pr domain.ProjectRepository) domain.ProjectUsecase {
 	return &projectUsecase{
 		projectRepo: pr,
+		// columnUsecase: cu,
 	}
 }
 
-func (p *projectUsecase) Fetch() {
-	fmt.Println("Project USecase Fetch")
-	p.projectRepo.GetProjectByID()
-}
-
 func (p *projectUsecase) CreateProject(project *domain.Project) error {
+
 	err := p.projectRepo.StoreProject(project)
 	if err != nil {
 		return err
 	}
 
+	// column := domain.Column{
+	// 	Name: ,
+	// }
 	return nil
+}
+
+func (p *projectUsecase) Fetch() {
+	fmt.Println("Project USecase Fetch")
+	p.projectRepo.GetProjectByID()
 }
 
 func (p *projectUsecase) FetchAllProjects() ([]domain.Project, error) {

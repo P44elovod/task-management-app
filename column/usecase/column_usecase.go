@@ -13,5 +13,10 @@ func NewColumnUsecase(cr domain.ColumnRepository) domain.ColumnUsecase {
 }
 
 func (c *columnUsecase) CreateColumn(column *domain.Column) error {
+	err := c.columnRepo.StoreColumn(column)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

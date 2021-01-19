@@ -9,10 +9,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type ResponseError struct {
-	Message string `json:"message"`
-}
-
 type ProjectHandler struct {
 	PUsecase domain.ProjectUsecase
 	// PRepository domain.ProjectRepository
@@ -32,7 +28,11 @@ func (p *ProjectHandler) Fetch() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		projectsList, err := p.PUsecase.FetchAllProjects()
-		helpers.FailOnError(err, "Project list request went wrong")
+		if err != nil {
+			helpers.RespondWithError(w, http.StatusBadRequest, "Project list request went wrong")
+			helpers.FailOnError(err, "Project list request went wrong")
+		}
+
 		helpers.RespondWithJSON(w, http.StatusOK, projectsList)
 	}
 
@@ -45,12 +45,12 @@ func (p *ProjectHandler) Create() http.HandlerFunc {
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&project); err != nil {
 			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
+			helpers.FailOnError(err, "Create project went wrong")
 		}
 		defer r.Body.Close()
 
 		p.PUsecase.CreateProject(&project)
-		res := &project
-		helpers.RespondWithJSON(w, http.StatusCreated, res)
+		helpers.RespondWithJSON(w, http.StatusCreated, &project)
 
 	}
 
