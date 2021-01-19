@@ -14,11 +14,11 @@ type ResponseError struct {
 }
 
 type ProjectHandler struct {
-	PUsecase domain.ProjectUseCase
+	PUsecase domain.ProjectUsecase
 	// PRepository domain.ProjectRepository
 }
 
-func New(r *mux.Router, pu domain.ProjectUseCase) {
+func New(r *mux.Router, pu domain.ProjectUsecase) {
 	handler := &ProjectHandler{
 		PUsecase: pu,
 	}

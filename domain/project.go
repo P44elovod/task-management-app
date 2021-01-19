@@ -6,7 +6,7 @@ type Project struct {
 	Description string `json:"description"`
 }
 
-type ProjectUseCase interface {
+type ProjectUsecase interface {
 	CreateProject(project *Project) error
 	FetchAllProjects() ([]Project, error)
 	GetProjectByID() (Project, error)

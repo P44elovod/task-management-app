@@ -7,10 +7,12 @@ type Column struct {
 	Position  uint
 }
 
-type ColumnUseCase interface {
-	// CreateColumn()
+type ColumnUsecase interface {
+	CreateColumn(column *Column) error
 	// UpdateColumnByID()
 	// DeleteColumnByID()
 	// FetchColumnsByProjectID()
 }
-type ColumnRepository interface{}
+type ColumnRepository interface {
+	StoreColumn(column *Column) error
+}

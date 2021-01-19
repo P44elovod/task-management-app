@@ -10,7 +10,7 @@ type projectUsecase struct {
 	projectRepo domain.ProjectRepository
 }
 
-func NewProjectUsecase(pr domain.ProjectRepository) domain.ProjectUseCase {
+func NewProjectUsecase(pr domain.ProjectRepository) domain.ProjectUsecase {
 	return &projectUsecase{
 		projectRepo: pr,
 	}
@@ -26,6 +26,7 @@ func (p *projectUsecase) CreateProject(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
