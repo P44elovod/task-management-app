@@ -2,7 +2,7 @@ package columnpsqlrepository
 
 import (
 	"database/sql"
-	"errors"
+	"fmt"
 
 	"github.com/P44elovod/task-management-app/domain"
 	"github.com/P44elovod/task-management-app/helpers"
@@ -16,40 +16,54 @@ func NewPsqlColumnRepository(db *sql.DB) domain.ColumnRepository {
 	return &psqlColumnRepository{db}
 }
 
-func (p *psqlColumnRepository) StoreColumn(column *domain.Column) error {
-
-	if p.CheckColumnNameExists(column.Name) {
-		return errors.New("Column name should be unique")
+func (pc *psqlColumnRepository) FetchColumnsByProjectID(id string) ([]domain.Column, error) {
+	rows, err := pc.db.Query("SELECT id, name, position FROM column WHERE project_id=$1", id)
+	if err != nil {
+		helpers.FailOnError(err, "DB query processing went wrong!")
+		return nil, err
 	}
-	tx, err := p.db.Begin()
+	var columnList []domain.Column
+	for rows.Next() {
+		column := domain.Column{}
+		err = rows.Scan(&column.ID, &column.Name, &column.Position)
+		if err != nil {
+			helpers.FailOnError(err, "DB row deserialization went wrong!")
+			return nil, err
+		}
+
+		columnList = append(columnList, column)
+	}
+	return columnList, nil
+}
+
+func (pc *psqlColumnRepository) StoreColumn(column *domain.Column) error {
+
+	tx, err := pc.db.Begin()
 	if err != nil {
 		return err
 	}
 
-	stmt, err := tx.Prepare("INSERT INTO column (name, project_id) VALUES ($1, $2) RETURNING id")
+	stmt, err := tx.Prepare("INSERT INTO project_column (name, project_id, position) VALUES ($1, $2, $3) RETURNING id")
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
 	defer stmt.Close()
 
-	stmt.QueryRow(column.Name, column.ProjectID).Scan(&column.ID)
+	row := stmt.QueryRow(column.Name, column.ProjectID, column.Position).Scan(&column.ID)
+	fmt.Println(row.Error())
 
 	return tx.Commit()
+
 }
 
-func (p *psqlColumnRepository) CheckColumnNameExists(name string) bool {
-	row := p.db.QueryRow("SELECT COUNT(name) FROM column WHERE name=$1", name)
+func (pc *psqlColumnRepository) CheckColumnNameExists(name *string) bool {
 
 	var count int
-	err := row.Scan(&count)
-	if err != nil {
-		helpers.FailOnError(err, "Row Scan went wrong")
-	}
-
+	pc.db.QueryRow("SELECT COUNT(name) FROM project_column WHERE name=$1", name).Scan(&count)
 	if count > 0 {
+		fmt.Println(true)
 		return true
 	}
-
 	return false
 }

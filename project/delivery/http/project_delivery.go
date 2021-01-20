@@ -30,7 +30,6 @@ func (p *ProjectHandler) Fetch() http.HandlerFunc {
 		projectsList, err := p.PUsecase.FetchAllProjects()
 		if err != nil {
 			helpers.RespondWithError(w, http.StatusBadRequest, "Project list request went wrong")
-			helpers.FailOnError(err, "Project list request went wrong")
 		}
 
 		helpers.RespondWithJSON(w, http.StatusOK, projectsList)
@@ -45,11 +44,13 @@ func (p *ProjectHandler) Create() http.HandlerFunc {
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&project); err != nil {
 			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
-			helpers.FailOnError(err, "Create project went wrong")
 		}
 		defer r.Body.Close()
+		err := p.PUsecase.CreateProject(&project)
+		if err != nil {
+			helpers.RespondWithError(w, http.StatusExpectationFailed, "Rquested data is not reached")
+		}
 
-		p.PUsecase.CreateProject(&project)
 		helpers.RespondWithJSON(w, http.StatusCreated, &project)
 
 	}

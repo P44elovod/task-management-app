@@ -7,7 +7,7 @@ CREATE TABLE "project" (
   "deleted_at" timestamp
 );
 
-CREATE TABLE "column" (
+CREATE TABLE "project_column" (
   "id" bigserial UNIQUE PRIMARY KEY NOT NULL,
   "name" varchar(255) UNIQUE NOT NULL,
   "project_id" bigint,
@@ -15,6 +15,7 @@ CREATE TABLE "column" (
   "created_at" timestamp NOT NULL DEFAULT (now()),
   "updated_at" timestamp,
   "deleted_at" timestamp
+  FOREIGN KEY (project_id) REFERENCES project(id) ON UPDATE CASCADE,
 );
 
 CREATE TABLE "task" (
@@ -38,8 +39,8 @@ CREATE TABLE "comment" (
   "deleted_at" timestamp
 );
 
-ALTER TABLE "column" ADD FOREIGN KEY ("project_id") REFERENCES "project" ("id");
+ALTER TABLE "project_column" ADD FOREIGN KEY ("project_id") REFERENCES "project" ("id");
 
-ALTER TABLE "task" ADD FOREIGN KEY ("column_id") REFERENCES "column" ("id");
+ALTER TABLE "task" ADD FOREIGN KEY ("column_id") REFERENCES "project_column" ("id");
 
 ALTER TABLE "comment" ADD FOREIGN KEY ("task_id") REFERENCES "task" ("id");

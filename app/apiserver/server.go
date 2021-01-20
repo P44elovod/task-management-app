@@ -1,7 +1,6 @@
 package apiserver
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/P44elovod/task-management-app/config"
@@ -29,15 +28,8 @@ func (s *Server) start() error {
 		return err
 	}
 
-	s.configureRouter()
-
 	s.logger.Info("start api server")
 	return http.ListenAndServe(s.config.ServerPort, s.router)
-}
-
-func (s *Server) configureRouter() {
-	s.router.HandleFunc("/", s.handleHello())
-
 }
 
 func (s *Server) configureLogger() error {
@@ -50,13 +42,4 @@ func (s *Server) configureLogger() error {
 	s.logger.SetLevel(level)
 
 	return nil
-}
-
-func (s *Server) handleHello() http.HandlerFunc {
-
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		fmt.Fprintf(w, "hello")
-		s.logger.Info("all good")
-	}
 }

@@ -32,7 +32,11 @@ func (c *ColumnHandler) Create() http.HandlerFunc {
 		}
 		defer r.Body.Close()
 
-		c.CUsecase.CreateColumn(&column)
+		err := c.CUsecase.CreateColumn(&column)
+		if err != nil {
+			helpers.RespondWithError(w, 400, "Column not created")
+		}
+
 		helpers.RespondWithJSON(w, http.StatusCreated, &column)
 
 	}

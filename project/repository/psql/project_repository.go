@@ -51,7 +51,6 @@ func (p *psqlProjectRepository) StoreProject(project *domain.Project) error {
 	defer stmt.Close()
 
 	stmt.QueryRow(project.Name, project.Description).Scan(&project.ID)
-
 	return tx.Commit()
 }
 
