@@ -12,9 +12,10 @@ type projectUsecase struct {
 	columnUsecase domain.ColumnUsecase
 }
 
-func NewProjectUsecase(pr domain.ProjectRepository) domain.ProjectUsecase {
+func NewProjectUsecase(pr domain.ProjectRepository, cu domain.ColumnUsecase) domain.ProjectUsecase {
 	return &projectUsecase{
-		projectRepo: pr,
+		projectRepo:   pr,
+		columnUsecase: cu,
 	}
 }
 
@@ -31,7 +32,6 @@ func (p *projectUsecase) CreateProject(project *domain.Project) error {
 		Name:      defultColumnName,
 		Position:  1,
 	}
-	fmt.Println(project.Columns)
 
 	err = p.columnUsecase.CreateColumn(&defaultColumn)
 	helpers.FailOnError(err, "Column storing went wrong")

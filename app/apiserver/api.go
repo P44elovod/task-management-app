@@ -20,8 +20,8 @@ func (a *Api) Start(config *config.Config) error {
 	db, err := a.db.newDB(config)
 	helpers.FailOnError(err, "database connection doesn't work")
 
-	_column.InitColumn(srv.router, db)
-	_project.InitProject(srv.router, db)
+	column := _column.InitColumn(srv.router, db)
+	_project.InitProject(srv.router, db, column.ColumnUsecase)
 
 	if err := srv.start(); err != nil {
 		log.Fatal(err)

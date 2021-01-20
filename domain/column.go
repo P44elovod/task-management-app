@@ -5,7 +5,7 @@ type Column struct {
 	ProjectID uint   `json:"project_id"`
 	Name      string `json:"name"`
 	Position  uint   `json:"position"`
-	// Tasks     []Task `json:"tasks"`
+	Tasks     []Task `json:"tasks"`
 }
 
 type ColumnUsecase interface {
