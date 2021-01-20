@@ -40,6 +40,7 @@ func (pc *psqlColumnRepository) StoreColumn(column *domain.Column) error {
 
 	tx, err := pc.db.Begin()
 	if err != nil {
+		fmt.Println("11")
 		return err
 	}
 
@@ -50,20 +51,17 @@ func (pc *psqlColumnRepository) StoreColumn(column *domain.Column) error {
 	}
 	defer stmt.Close()
 
-	row := stmt.QueryRow(column.Name, column.ProjectID, column.Position).Scan(&column.ID)
-	fmt.Println(row.Error())
-
+	stmt.QueryRow(column.Name, column.ProjectID, column.Position).Scan(&column.ID)
 	return tx.Commit()
 
 }
 
 func (pc *psqlColumnRepository) CheckColumnNameExists(name *string) bool {
-
 	var count int
 	pc.db.QueryRow("SELECT COUNT(name) FROM project_column WHERE name=$1", name).Scan(&count)
 	if count > 0 {
-		fmt.Println(true)
 		return true
 	}
+
 	return false
 }

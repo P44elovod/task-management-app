@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/P44elovod/task-management-app/domain"
+	"github.com/P44elovod/task-management-app/helpers"
 )
 
 type projectUsecase struct {
@@ -23,6 +24,19 @@ func (p *projectUsecase) CreateProject(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
+
+	defultColumnName := helpers.GenerateColumnName(project.Name)
+	defaultColumn := domain.Column{
+		ProjectID: project.ID,
+		Name:      defultColumnName,
+		Position:  1,
+	}
+	fmt.Println(project.Columns)
+
+	err = p.columnUsecase.CreateColumn(&defaultColumn)
+	helpers.FailOnError(err, "Column storing went wrong")
+
+	project.Columns = append(project.Columns, defaultColumn)
 
 	return nil
 }

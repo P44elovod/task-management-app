@@ -45,12 +45,13 @@ func (p *ProjectHandler) Create() http.HandlerFunc {
 		if err := decoder.Decode(&project); err != nil {
 			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		}
-		defer r.Body.Close()
 		err := p.PUsecase.CreateProject(&project)
 		if err != nil {
+			helpers.FailOnError(err, "WTF")
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Rquested data is not reached")
 		}
 
+		defer r.Body.Close()
 		helpers.RespondWithJSON(w, http.StatusCreated, &project)
 
 	}

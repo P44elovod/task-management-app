@@ -2,6 +2,7 @@ package columnhttpdelivery
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/P44elovod/task-management-app/domain"
@@ -30,12 +31,13 @@ func (c *ColumnHandler) Create() http.HandlerFunc {
 		if err := decoder.Decode(&column); err != nil {
 			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		}
-		defer r.Body.Close()
 
 		err := c.CUsecase.CreateColumn(&column)
 		if err != nil {
+			fmt.Println(err)
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Column not created")
 		}
+		defer r.Body.Close()
 
 		helpers.RespondWithJSON(w, http.StatusCreated, &column)
 

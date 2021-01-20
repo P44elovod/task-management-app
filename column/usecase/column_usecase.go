@@ -23,6 +23,7 @@ func (c *columnUsecase) CreateColumn(column *domain.Column) error {
 		if err != nil {
 			return err
 		}
+		return nil
 	}
 
 	return errors.New("Column name should be unique")
