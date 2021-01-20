@@ -34,7 +34,7 @@ func (c *ColumnHandler) Create() http.HandlerFunc {
 
 		err := c.CUsecase.CreateColumn(&column)
 		if err != nil {
-			helpers.RespondWithError(w, 400, "Column not created")
+			helpers.RespondWithError(w, http.StatusInternalServerError, "Column not created")
 		}
 
 		helpers.RespondWithJSON(w, http.StatusCreated, &column)

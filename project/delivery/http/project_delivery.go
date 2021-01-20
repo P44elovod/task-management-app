@@ -48,7 +48,7 @@ func (p *ProjectHandler) Create() http.HandlerFunc {
 		defer r.Body.Close()
 		err := p.PUsecase.CreateProject(&project)
 		if err != nil {
-			helpers.RespondWithError(w, http.StatusExpectationFailed, "Rquested data is not reached")
+			helpers.RespondWithError(w, http.StatusInternalServerError, "Rquested data is not reached")
 		}
 
 		helpers.RespondWithJSON(w, http.StatusCreated, &project)
