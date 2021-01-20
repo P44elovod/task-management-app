@@ -8,6 +8,7 @@ import (
 
 	_column "github.com/P44elovod/task-management-app/column"
 	_project "github.com/P44elovod/task-management-app/project"
+	_task "github.com/P44elovod/task-management-app/task"
 )
 
 type Api struct {
@@ -21,7 +22,9 @@ func (a *Api) Start(config *config.Config) error {
 	helpers.FailOnError(err, "database connection doesn't work")
 
 	column := _column.InitColumn(srv.router, db)
+
 	_project.InitProject(srv.router, db, column.ColumnUsecase)
+	_task.InitTask(srv.router, db)
 
 	if err := srv.start(); err != nil {
 		log.Fatal(err)

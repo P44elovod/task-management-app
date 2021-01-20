@@ -27,6 +27,7 @@ func (p *projectUsecase) CreateProject(project *domain.Project) error {
 	}
 
 	defultColumnName := helpers.GenerateColumnName(project.Name)
+
 	defaultColumn := domain.Column{
 		ProjectID: project.ID,
 		Name:      defultColumnName,

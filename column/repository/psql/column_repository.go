@@ -2,7 +2,6 @@ package columnpsqlrepository
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/P44elovod/task-management-app/domain"
 	"github.com/P44elovod/task-management-app/helpers"
@@ -13,11 +12,11 @@ type psqlColumnRepository struct {
 }
 
 func NewPsqlColumnRepository(db *sql.DB) domain.ColumnRepository {
-	return &psqlColumnRepository{db}
+	return &psqlColumnRepository{db: db}
 }
 
-func (pc *psqlColumnRepository) FetchColumnsByProjectID(id string) ([]domain.Column, error) {
-	rows, err := pc.db.Query("SELECT id, name, position FROM column WHERE project_id=$1", id)
+func (cr *psqlColumnRepository) FetchColumnsByProjectID(id string) ([]domain.Column, error) {
+	rows, err := cr.db.Query("SELECT id, name, position FROM column WHERE project_id=$1", id)
 	if err != nil {
 		helpers.FailOnError(err, "DB query processing went wrong!")
 		return nil, err
@@ -36,11 +35,10 @@ func (pc *psqlColumnRepository) FetchColumnsByProjectID(id string) ([]domain.Col
 	return columnList, nil
 }
 
-func (pc *psqlColumnRepository) StoreColumn(column *domain.Column) error {
+func (cr *psqlColumnRepository) StoreColumn(column *domain.Column) error {
 
-	tx, err := pc.db.Begin()
+	tx, err := cr.db.Begin()
 	if err != nil {
-		fmt.Println("11")
 		return err
 	}
 
@@ -56,9 +54,9 @@ func (pc *psqlColumnRepository) StoreColumn(column *domain.Column) error {
 
 }
 
-func (pc *psqlColumnRepository) CheckColumnNameExists(name *string) bool {
+func (cr *psqlColumnRepository) CheckColumnNameExists(name *string) bool {
 	var count int
-	pc.db.QueryRow("SELECT COUNT(name) FROM project_column WHERE name=$1", name).Scan(&count)
+	cr.db.QueryRow("SELECT COUNT(name) FROM project_column WHERE name=$1", name).Scan(&count)
 	if count > 0 {
 		return true
 	}

@@ -1,19 +1,22 @@
 package domain
 
 type Task struct {
-	ID          uint
-	ColumnID    uint
-	Priority    uint
-	Name        string
-	Description string
+	ID          uint      `json:"id"`
+	ColumnID    uint      `json:"column_id"`
+	Priority    uint      `json:"priority"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Comments    []Comment `json:"comments"`
 }
 
 type TaskUseCase interface {
-	// CreateTask()
+	CreateTask(task *Task) error
 	// UpdateTaskByID()
 	// DeleteTaskByID()
 	// FetchTaskByID()
 	// FetchTasksByColumnID()
 
 }
-type TaskRepository interface{}
+type TaskRepository interface {
+	StoreTask(task *Task) error
+}

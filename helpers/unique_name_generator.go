@@ -7,5 +7,5 @@ import (
 
 func GenerateColumnName(projectName string) string {
 
-	return fmt.Sprintf("%s - Default Column(%q)", projectName, time.Now().Format(time.RFC822))
+	return fmt.Sprintf("%s - Default Column(%q)", projectName, time.Now().Format(time.RFC3339Nano))
 }

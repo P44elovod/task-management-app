@@ -13,7 +13,7 @@ type psqlProjectRepository struct {
 }
 
 func NewPsqlProjectleRepository(db *sql.DB) domain.ProjectRepository {
-	return &psqlProjectRepository{db}
+	return &psqlProjectRepository{db: db}
 }
 
 func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
