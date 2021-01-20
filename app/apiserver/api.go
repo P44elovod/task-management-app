@@ -7,6 +7,7 @@ import (
 	"github.com/P44elovod/task-management-app/helpers"
 
 	_column "github.com/P44elovod/task-management-app/column"
+	_comment "github.com/P44elovod/task-management-app/comment"
 	_project "github.com/P44elovod/task-management-app/project"
 	_task "github.com/P44elovod/task-management-app/task"
 )
@@ -25,6 +26,7 @@ func (a *Api) Start(config *config.Config) error {
 
 	_project.InitProject(srv.router, db, column.ColumnUsecase)
 	_task.InitTask(srv.router, db)
+	_comment.InitComment(srv.router, db)
 
 	if err := srv.start(); err != nil {
 		log.Fatal(err)

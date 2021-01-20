@@ -13,9 +13,9 @@ type ColumnHandler struct {
 	CUsecase domain.ColumnUsecase
 }
 
-func New(r *mux.Router, pu domain.ColumnUsecase) {
+func New(r *mux.Router, cu domain.ColumnUsecase) {
 	handler := &ColumnHandler{
-		CUsecase: pu,
+		CUsecase: cu,
 	}
 
 	r.HandleFunc("/column/new", handler.Create()).Methods("POST")

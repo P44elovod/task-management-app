@@ -15,7 +15,6 @@ CREATE TABLE "project_column" (
   "created_at" timestamp NOT NULL DEFAULT (now()),
   "updated_at" timestamp,
   "deleted_at" timestamp
-  FOREIGN KEY (project_id) REFERENCES project(id) ON UPDATE CASCADE,
 );
 
 CREATE TABLE "task" (
@@ -31,8 +30,7 @@ CREATE TABLE "task" (
 
 CREATE TABLE "comment" (
   "id" bigserial UNIQUE PRIMARY KEY NOT NULL,
-  "name" varchar(500) NOT NULL,
-  "description" varchar(5000) NOT NULL,
+  "text" varchar(5000) NOT NULL,
   "task_id" bigint,
   "created_at" timestamp NOT NULL DEFAULT (now()),
   "updated_at" timestamp,
