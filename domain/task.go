@@ -11,7 +11,7 @@ type Task struct {
 
 type TaskUseCase interface {
 	CreateTask(task *Task) error
-	// UpdateTaskByID()
+	GetTaskWithCommentByID(id string) (Task, error)
 	// DeleteTaskByID()
 	// FetchTaskByID()
 	// FetchTasksByColumnID()
@@ -19,4 +19,5 @@ type TaskUseCase interface {
 }
 type TaskRepository interface {
 	StoreTask(task *Task) error
+	GetByID(id string) (Task, error)
 }

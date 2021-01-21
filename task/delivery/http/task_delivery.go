@@ -20,6 +20,8 @@ func New(r *mux.Router, tu domain.TaskUseCase) {
 	}
 
 	r.HandleFunc("/task/new", handler.Create()).Methods("POST")
+	r.HandleFunc("/task/{id:[0-9]+}", handler.GetByID()).Methods("GET")
+
 }
 
 func (th *TaskHandler) Create() http.HandlerFunc {
@@ -41,4 +43,18 @@ func (th *TaskHandler) Create() http.HandlerFunc {
 		helpers.RespondWithJSON(w, http.StatusCreated, &task)
 
 	}
+}
+
+func (th *TaskHandler) GetByID() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		projectsList, err := th.TUsecase.GetTaskWithCommentByID(vars["id"])
+		if err != nil {
+			helpers.RespondWithError(w, http.StatusBadRequest, "Task request went wrong")
+		}
+
+		helpers.RespondWithJSON(w, http.StatusOK, projectsList)
+	}
+
 }

@@ -23,9 +23,10 @@ func (a *Api) Start(config *config.Config) error {
 	helpers.FailOnError(err, "database connection doesn't work")
 
 	column := _column.InitColumn(srv.router, db)
+	comment := _comment.InitComment(srv.router, db)
 
 	_project.InitProject(srv.router, db, column.ColumnUsecase)
-	_task.InitTask(srv.router, db)
+	_task.InitTask(srv.router, db, comment.CommentRepository)
 	_comment.InitComment(srv.router, db)
 
 	if err := srv.start(); err != nil {

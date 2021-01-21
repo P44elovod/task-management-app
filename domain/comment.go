@@ -15,4 +15,5 @@ type CommentUseCase interface {
 }
 type CommentRepository interface {
 	StoreComment(comment *Comment) error
+	GetAllByTaskID(id string) ([]Comment, error)
 }

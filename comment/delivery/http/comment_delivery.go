@@ -20,6 +20,7 @@ func New(r *mux.Router, cmu domain.CommentUseCase) {
 	}
 
 	r.HandleFunc("/comment/new", handler.Create()).Methods("POST")
+
 }
 
 func (ch *CommentHandler) Create() http.HandlerFunc {

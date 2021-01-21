@@ -11,7 +11,6 @@ import (
 
 type ProjectHandler struct {
 	PUsecase domain.ProjectUsecase
-	// PRepository domain.ProjectRepository
 }
 
 func New(r *mux.Router, pu domain.ProjectUsecase) {

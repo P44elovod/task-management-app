@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/P44elovod/task-management-app/domain"
+	"github.com/P44elovod/task-management-app/helpers"
 )
 
 type psqlCommentRepository struct {
@@ -29,4 +30,25 @@ func (cmr *psqlCommentRepository) StoreComment(comment *domain.Comment) error {
 
 	stmt.QueryRow(comment.TaskID, comment.Text).Scan(&comment.ID)
 	return tx.Commit()
+}
+
+func (cmr *psqlCommentRepository) GetAllByTaskID(id string) ([]domain.Comment, error) {
+
+	rows, err := cmr.db.Query("SELECT id, text, task_id FROM comment WHERE task_id=$1 ORDER BY created_at", id)
+	if err != nil {
+		helpers.FailOnError(err, "Comment DB query processing went wrong!")
+		return nil, err
+	}
+	var commentList []domain.Comment
+	for rows.Next() {
+		comment := domain.Comment{}
+		err = rows.Scan(&comment.ID, &comment.Text, &comment.TaskID)
+		if err != nil {
+			helpers.FailOnError(err, " Comment DB row deserialization went wrong!")
+			return nil, err
+		}
+
+		commentList = append(commentList, comment)
+	}
+	return commentList, nil
 }

@@ -3,12 +3,14 @@ package taskusecase
 import "github.com/P44elovod/task-management-app/domain"
 
 type taskUsecase struct {
-	taskRepo domain.TaskRepository
+	taskRepo    domain.TaskRepository
+	commentRepo domain.CommentRepository
 }
 
-func NewTaskUsecase(tr domain.TaskRepository) domain.TaskUseCase {
+func NewTaskUsecase(tr domain.TaskRepository, cmr domain.CommentRepository) domain.TaskUseCase {
 	return &taskUsecase{
-		taskRepo: tr,
+		taskRepo:    tr,
+		commentRepo: cmr,
 	}
 }
 
@@ -19,4 +21,18 @@ func (tu *taskUsecase) CreateTask(task *domain.Task) error {
 	}
 
 	return nil
+}
+
+func (tu *taskUsecase) GetTaskWithCommentByID(id string) (domain.Task, error) {
+
+	task, err := tu.taskRepo.GetByID(id)
+
+	commentList, err := tu.commentRepo.GetAllByTaskID(id)
+	if err != nil {
+		return task, err
+	}
+
+	task.Comments = commentList
+
+	return task, nil
 }
