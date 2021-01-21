@@ -10,10 +10,20 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func InitTask(r *mux.Router, db *sql.DB, cmr domain.CommentRepository) {
+type TaskInit struct {
+	TaskRepository domain.TaskRepository
+	TaskUsecase    domain.TaskUseCase
+}
+
+func InitTask(r *mux.Router, db *sql.DB, cmr domain.CommentRepository) *TaskInit {
 	tr := _tRepository.NewPsqlTaskRepository(db)
 	tu := _tUsecase.NewTaskUsecase(tr, cmr)
 
 	_tHttpDelivery.New(r, tu)
+
+	return &TaskInit{
+		TaskRepository: tr,
+		TaskUsecase:    tu,
+	}
 
 }

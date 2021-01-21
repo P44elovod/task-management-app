@@ -10,9 +10,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func InitProject(r *mux.Router, db *sql.DB, cu domain.ColumnUsecase) {
+func InitProject(r *mux.Router, db *sql.DB, cu domain.ColumnUsecase, tr domain.TaskRepository) {
 	pr := _pRepository.NewPsqlProjectleRepository(db)
-	pu := _pUsecase.NewProjectUsecase(pr, cu)
+	pu := _pUsecase.NewProjectUsecase(pr, cu, tr)
 
 	_pHttpDelivery.New(r, pu)
 

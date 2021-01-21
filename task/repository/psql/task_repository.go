@@ -52,3 +52,25 @@ func (tr *psqlTaskRepository) GetByID(id string) (domain.Task, error) {
 
 	return task, nil
 }
+
+func (tr *psqlTaskRepository) GetAllByColumnID(id uint) ([]domain.Task, error) {
+	var taskList []domain.Task
+
+	row, err := tr.db.Query("SELECT id, name, description, column_id, position, created_at FROM task WHERE column_id=$1 ORDER BY position", id)
+	if err != nil {
+		helpers.FailOnError(err, "Task DB query processing went wrong!")
+		return taskList, err
+	}
+
+	for row.Next() {
+		task := domain.Task{}
+		err = row.Scan(&task.ID, &task.Name, &task.Description, &task.ColumnID, &task.Priority, &task.CreatedAt)
+		if err != nil {
+			helpers.FailOnError(err, "Task DB row deserialization went wrong!")
+			return nil, err
+		}
+
+		taskList = append(taskList, task)
+	}
+	return taskList, nil
+}

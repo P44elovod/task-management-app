@@ -15,16 +15,16 @@ func NewPsqlColumnRepository(db *sql.DB) domain.ColumnRepository {
 	return &psqlColumnRepository{db: db}
 }
 
-func (cr *psqlColumnRepository) FetchColumnsByProjectID(id string) ([]domain.Column, error) {
-	rows, err := cr.db.Query("SELECT id, name, position FROM column WHERE project_id=$1", id)
+func (cr *psqlColumnRepository) GetColumnsByProjectID(id string) ([]domain.Column, error) {
+	rows, err := cr.db.Query("SELECT id, name, position, project_id FROM project_column WHERE project_id=$1 ORDER BY position", id)
 	if err != nil {
-		helpers.FailOnError(err, "DB query processing went wrong!")
+		helpers.FailOnError(err, "Column DB query processing went wrong!")
 		return nil, err
 	}
 	var columnList []domain.Column
 	for rows.Next() {
 		column := domain.Column{}
-		err = rows.Scan(&column.ID, &column.Name, &column.Position)
+		err = rows.Scan(&column.ID, &column.Name, &column.Position, &column.ProjectID)
 		if err != nil {
 			helpers.FailOnError(err, "DB row deserialization went wrong!")
 			return nil, err

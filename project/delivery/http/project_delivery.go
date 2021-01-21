@@ -19,7 +19,22 @@ func New(r *mux.Router, pu domain.ProjectUsecase) {
 	}
 
 	r.HandleFunc("/projects", handler.Fetch()).Methods("GET")
+	r.HandleFunc("/project/{id:[0-9]+}", handler.GetByID()).Methods("GET")
 	r.HandleFunc("/project/new", handler.Create()).Methods("POST")
+
+}
+
+func (p *ProjectHandler) GetByID() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		project, err := p.PUsecase.GetProjectByID(vars["id"])
+		if err != nil {
+			helpers.RespondWithError(w, http.StatusBadRequest, "Project request went wrong")
+		}
+
+		helpers.RespondWithJSON(w, http.StatusOK, project)
+	}
 
 }
 

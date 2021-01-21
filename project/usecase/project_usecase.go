@@ -1,8 +1,6 @@
 package projectusecase
 
 import (
-	"fmt"
-
 	"github.com/P44elovod/task-management-app/domain"
 	"github.com/P44elovod/task-management-app/helpers"
 )
@@ -10,11 +8,13 @@ import (
 type projectUsecase struct {
 	projectRepo   domain.ProjectRepository
 	columnUsecase domain.ColumnUsecase
+	taskRepo      domain.TaskRepository
 }
 
-func NewProjectUsecase(pr domain.ProjectRepository, cu domain.ColumnUsecase) domain.ProjectUsecase {
+func NewProjectUsecase(pr domain.ProjectRepository, cu domain.ColumnUsecase, tr domain.TaskRepository) domain.ProjectUsecase {
 	return &projectUsecase{
 		projectRepo:   pr,
+		taskRepo:      tr,
 		columnUsecase: cu,
 	}
 }
@@ -42,11 +42,6 @@ func (p *projectUsecase) CreateProject(project *domain.Project) error {
 	return nil
 }
 
-func (p *projectUsecase) Fetch() {
-	fmt.Println("Project USecase Fetch")
-	p.projectRepo.GetProjectByID()
-}
-
 func (p *projectUsecase) FetchAllProjects() ([]domain.Project, error) {
 
 	projectsList, err := p.projectRepo.FetchAllProjects()
@@ -57,8 +52,22 @@ func (p *projectUsecase) FetchAllProjects() ([]domain.Project, error) {
 	return projectsList, nil
 }
 
-func (p *projectUsecase) GetProjectByID() (domain.Project, error) {
-	return domain.Project{}, nil
+func (p *projectUsecase) GetProjectByID(id string) (domain.Project, error) {
+	project, err := p.projectRepo.GetProjectByID(id)
+	if err != nil {
+		helpers.FailOnError(err, "Project querying went wrong")
+		return project, err
+	}
+
+	columnList, err := p.columnUsecase.GetColumnsWithTasksByProjectID(id)
+	if err != nil {
+		helpers.FailOnError(err, "Columns with tasks querying went wrong")
+		return project, err
+	}
+
+	project.Columns = columnList
+
+	return project, nil
 }
 
 func (p *projectUsecase) DeleteProject() error {

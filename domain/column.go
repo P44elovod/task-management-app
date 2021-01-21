@@ -10,12 +10,12 @@ type Column struct {
 
 type ColumnUsecase interface {
 	CreateColumn(column *Column) error
-	FetchColumnsByProjectID(id string) ([]Column, error)
+	GetColumnsWithTasksByProjectID(id string) ([]Column, error)
 	// UpdateColumnByID()
 	// DeleteColumnByID()
 }
 type ColumnRepository interface {
 	StoreColumn(column *Column) error
 	CheckColumnNameExists(name *string) bool
-	FetchColumnsByProjectID(id string) ([]Column, error)
+	GetColumnsByProjectID(id string) ([]Column, error)
 }

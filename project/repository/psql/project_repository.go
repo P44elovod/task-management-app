@@ -2,7 +2,6 @@ package projectpsqlrepository
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/P44elovod/task-management-app/domain"
 	"github.com/P44elovod/task-management-app/helpers"
@@ -19,7 +18,7 @@ func NewPsqlProjectleRepository(db *sql.DB) domain.ProjectRepository {
 func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
 	rows, err := p.db.Query("SELECT id, name, description FROM project ORDER BY name")
 	if err != nil {
-		helpers.FailOnError(err, "DB query processing went wrong!")
+		helpers.FailOnError(err, "Project DB query processing went wrong!")
 		return nil, err
 	}
 	var progectList []domain.Project
@@ -27,7 +26,7 @@ func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
 		project := domain.Project{}
 		err = rows.Scan(&project.ID, &project.Name, &project.Description)
 		if err != nil {
-			helpers.FailOnError(err, "DB row deserialization went wrong!")
+			helpers.FailOnError(err, "Project DB row deserialization went wrong!")
 			return nil, err
 		}
 
@@ -64,8 +63,22 @@ func (p *psqlProjectRepository) DeleteProject() error {
 	return nil
 }
 
-func (p *psqlProjectRepository) GetProjectByID() (domain.Project, error) {
+func (p *psqlProjectRepository) GetProjectByID(id string) (domain.Project, error) {
 
-	fmt.Println("psqlProjectRepository fetch")
-	return domain.Project{}, nil
+	var project domain.Project
+	row, err := p.db.Query("SELECT id, name, description FROM project WHERE id = $1", id)
+	if err != nil {
+		helpers.FailOnError(err, "Project DB query processing went wrong!")
+		return project, err
+	}
+
+	for row.Next() {
+		err = row.Scan(&project.ID, &project.Name, &project.Description)
+		if err != nil {
+			helpers.FailOnError(err, "Project DB row deserialization went wrong!")
+			return project, err
+		}
+
+	}
+	return project, nil
 }

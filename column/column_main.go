@@ -15,9 +15,9 @@ type ColumnInit struct {
 	ColumnUsecase    domain.ColumnUsecase
 }
 
-func InitColumn(r *mux.Router, db *sql.DB) *ColumnInit {
+func InitColumn(r *mux.Router, db *sql.DB, tr domain.TaskRepository) *ColumnInit {
 	cr := _cRepository.NewPsqlColumnRepository(db)
-	cu := _cUsecase.NewColumnUsecase(cr)
+	cu := _cUsecase.NewColumnUsecase(cr, tr)
 
 	_cHttpDelivery.New(r, cu)
 
