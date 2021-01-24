@@ -4,12 +4,13 @@ import (
 	"errors"
 
 	"github.com/P44elovod/task-management-app/domain"
-	"github.com/P44elovod/task-management-app/helpers"
+	"github.com/sirupsen/logrus"
 )
 
 type columnUsecase struct {
 	columnRepo domain.ColumnRepository
 	teaskRepo  domain.TaskRepository
+	logger     *logrus.Logger
 }
 
 func NewColumnUsecase(cr domain.ColumnRepository, tr domain.TaskRepository) domain.ColumnUsecase {
@@ -36,14 +37,12 @@ func (c *columnUsecase) GetColumnsWithTasksByProjectID(id string) ([]domain.Colu
 
 	columnList, err := c.columnRepo.GetColumnsByProjectID(id)
 	if err != nil {
-		helpers.FailOnError(err, "Columnlist querying went wrong")
 		return nil, err
 	}
 
 	for i := 0; i < len(columnList); i++ {
 		taskList, err := c.teaskRepo.GetAllByColumnID(columnList[i].ID)
 		if err != nil {
-			helpers.FailOnError(err, "Tasklist querying went wrong")
 			return nil, err
 		}
 		columnList[i].Tasks = taskList
@@ -58,7 +57,6 @@ func (c *columnUsecase) DeleteByID(id string) error {
 
 	column, err := c.columnRepo.GetByID(id)
 	if err != nil {
-		helpers.FailOnError(err, "Querying column went wrong")
 		return err
 	}
 
@@ -67,7 +65,6 @@ func (c *columnUsecase) DeleteByID(id string) error {
 	if column.Position != 1 {
 		newColID, err = c.columnRepo.GetColumnIDByPositionAndProjectID(column.ProjectID, column.Position-1)
 		if err != nil {
-			helpers.FailOnError(err, "Querying columnID went wrong")
 			return err
 		}
 	}
@@ -75,19 +72,16 @@ func (c *columnUsecase) DeleteByID(id string) error {
 	if column.Position == 1 && isLast == false {
 		newColID, err = c.columnRepo.GetColumnIDByPositionAndProjectID(column.ProjectID, column.Position+1)
 		if err != nil {
-			helpers.FailOnError(err, "Querying columnID went wrong")
 			return err
 		}
 	}
 
 	if column.Position == 1 && isLast == true {
-		helpers.FailOnError(err, "The last column couldn't be deleted")
 		return err
 	}
 
 	err = c.teaskRepo.UpdateColumnID(column.ID, newColID)
 	if err != nil {
-		helpers.FailOnError(err, "ColumnID updating went wrong")
 		return err
 	}
 

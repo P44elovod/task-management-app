@@ -4,7 +4,6 @@ import (
 	"database/sql"
 
 	"github.com/P44elovod/task-management-app/domain"
-	"github.com/P44elovod/task-management-app/helpers"
 )
 
 type psqlProjectRepository struct {
@@ -12,13 +11,14 @@ type psqlProjectRepository struct {
 }
 
 func NewPsqlProjectleRepository(db *sql.DB) domain.ProjectRepository {
-	return &psqlProjectRepository{db: db}
+	return &psqlProjectRepository{
+		db: db,
+	}
 }
 
 func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
 	rows, err := p.db.Query("SELECT id, name, description FROM project ORDER BY name")
 	if err != nil {
-		helpers.FailOnError(err, "Project DB query processing went wrong!")
 		return nil, err
 	}
 	var progectList []domain.Project
@@ -26,7 +26,6 @@ func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
 		project := domain.Project{}
 		err = rows.Scan(&project.ID, &project.Name, &project.Description)
 		if err != nil {
-			helpers.FailOnError(err, "Project DB row deserialization went wrong!")
 			return nil, err
 		}
 
@@ -58,14 +57,12 @@ func (p *psqlProjectRepository) GetProjectByID(id string) (domain.Project, error
 	var project domain.Project
 	row, err := p.db.Query("SELECT id, name, description FROM project WHERE id = $1", id)
 	if err != nil {
-		helpers.FailOnError(err, "Project DB query processing went wrong!")
 		return project, err
 	}
 
 	for row.Next() {
 		err = row.Scan(&project.ID, &project.Name, &project.Description)
 		if err != nil {
-			helpers.FailOnError(err, "Project DB row deserialization went wrong!")
 			return project, err
 		}
 
@@ -77,7 +74,6 @@ func (p *psqlProjectRepository) DeleteProjectByID(id string) error {
 
 	_, err := p.db.Exec("DELETE FROM project WHERE id=$1", id)
 	if err != nil {
-		helpers.FailOnError(err, "Deleting column went wrong")
 		return err
 	}
 	return nil

@@ -1,8 +1,6 @@
 package apiserver
 
 import (
-	"log"
-
 	"github.com/P44elovod/task-management-app/config"
 	"github.com/P44elovod/task-management-app/helpers"
 
@@ -22,16 +20,26 @@ func (a *Api) Start(config *config.Config) error {
 	db, err := a.db.newDB(config)
 	helpers.FailOnError(err, "database connection doesn't work")
 
-	comment := _comment.InitComment(srv.router, db)
-	task := _task.InitTask(srv.router, db, comment.CommentRepository)
-	column := _column.InitColumn(srv.router, db, task.TaskRepository)
-
-	_project.InitProject(srv.router, db, column.ColumnUsecase, task.TaskRepository)
-
-	if err := srv.start(); err != nil {
-		log.Fatal(err)
-		return err
+	initData := _project.InitData{
+		Router: srv.router,
+		Logger: srv.logger,
+		DB:     db,
 	}
 
+	initEntities(&initData)
+
+	srv.logger.Info("Server Started")
+	if err := srv.start(); err != nil {
+		srv.logger.Error(err)
+		return err
+	}
 	return nil
+}
+
+func initEntities(initData *_project.InitData) {
+	comment := _comment.InitComment(initData)
+	task := _task.InitTask(initData, comment.CommentRepository)
+	column := _column.InitColumn(initData, task.TaskRepository)
+
+	_project.InitProject(initData, column.ColumnUsecase, task.TaskRepository)
 }

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 
 	"github.com/P44elovod/task-management-app/domain"
-	"github.com/P44elovod/task-management-app/helpers"
 )
 
 type psqlColumnRepository struct {
@@ -18,7 +17,6 @@ func NewPsqlColumnRepository(db *sql.DB) domain.ColumnRepository {
 func (cr *psqlColumnRepository) GetColumnsByProjectID(id string) ([]domain.Column, error) {
 	rows, err := cr.db.Query("SELECT id, name, position, project_id FROM project_column WHERE project_id=$1 ORDER BY position", id)
 	if err != nil {
-		helpers.FailOnError(err, "Column DB query processing went wrong!")
 		return nil, err
 	}
 	var columnList []domain.Column
@@ -26,7 +24,6 @@ func (cr *psqlColumnRepository) GetColumnsByProjectID(id string) ([]domain.Colum
 		column := domain.Column{}
 		err = rows.Scan(&column.ID, &column.Name, &column.Position, &column.ProjectID)
 		if err != nil {
-			helpers.FailOnError(err, "DB row deserialization went wrong!")
 			return nil, err
 		}
 
@@ -41,14 +38,12 @@ func (cr *psqlColumnRepository) GetByID(id string) (domain.Column, error) {
 
 	rows, err := cr.db.Query("SELECT id, name, position, project_id FROM project_column WHERE id=$1", id)
 	if err != nil {
-		helpers.FailOnError(err, "Column DB query processing went wrong!")
 		return column, err
 	}
 
 	for rows.Next() {
 		err = rows.Scan(&column.ID, &column.Name, &column.Position, &column.ProjectID)
 		if err != nil {
-			helpers.FailOnError(err, "DB row deserialization went wrong!")
 			return column, err
 		}
 
@@ -62,14 +57,12 @@ func (cr *psqlColumnRepository) GetColumnIDByPositionAndProjectID(id, position u
 
 	rows, err := cr.db.Query("SELECT id FROM project_column WHERE project_id=$1 AND position=$2", id, position)
 	if err != nil {
-		helpers.FailOnError(err, "Column DB query processing went wrong!")
 		return ID, err
 	}
 
 	for rows.Next() {
 		err = rows.Scan(&ID)
 		if err != nil {
-			helpers.FailOnError(err, "Column DB row deserialization went wrong!")
 			return ID, err
 		}
 
@@ -99,7 +92,6 @@ func (cr *psqlColumnRepository) StoreColumn(column *domain.Column) error {
 func (cr *psqlColumnRepository) DeleteByID(id string) error {
 	_, err := cr.db.Exec("DELETE FROM project_column WHERE id=$1", id)
 	if err != nil {
-		helpers.FailOnError(err, "Deleting column went wrong")
 		return err
 	}
 	return nil

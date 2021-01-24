@@ -7,13 +7,15 @@ import (
 	"github.com/P44elovod/task-management-app/domain"
 	"github.com/P44elovod/task-management-app/helpers"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 )
 
 type ProjectHandler struct {
 	PUsecase domain.ProjectUsecase
+	logger   *logrus.Logger
 }
 
-func New(r *mux.Router, pu domain.ProjectUsecase) {
+func New(r *mux.Router, log *logrus.Logger, pu domain.ProjectUsecase) {
 	handler := &ProjectHandler{
 		PUsecase: pu,
 	}
@@ -30,7 +32,9 @@ func (p *ProjectHandler) GetByID() http.HandlerFunc {
 		vars := mux.Vars(r)
 		project, err := p.PUsecase.GetProjectByID(vars["id"])
 		if err != nil {
+			p.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusBadRequest, "Project request went wrong")
+			return
 		}
 
 		helpers.RespondWithJSON(w, http.StatusOK, project)
@@ -43,7 +47,9 @@ func (p *ProjectHandler) Fetch() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		projectsList, err := p.PUsecase.FetchAllProjects()
 		if err != nil {
+			p.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusBadRequest, "Project list request went wrong")
+			return
 		}
 
 		helpers.RespondWithJSON(w, http.StatusOK, projectsList)
@@ -57,12 +63,16 @@ func (p *ProjectHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&project); err != nil {
+			p.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
+			return
 		}
+
 		err := p.PUsecase.CreateProject(&project)
 		if err != nil {
-			helpers.FailOnError(err, "WTF")
+			p.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Rquested data is not reached")
+			return
 		}
 
 		defer r.Body.Close()

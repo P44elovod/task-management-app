@@ -6,9 +6,8 @@ type Comment struct {
 	Text   string `json:"text"`
 }
 
-type CommentUseCase interface {
-	CreateComment(comment *Comment) error
-}
+type CommentUseCase interface{}
+
 type CommentRepository interface {
 	StoreComment(comment *Comment) error
 	GetAllByTaskID(id string) ([]Comment, error)

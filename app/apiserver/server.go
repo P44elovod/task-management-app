@@ -28,7 +28,6 @@ func (s *Server) start() error {
 		return err
 	}
 
-	s.logger.Info("start api server")
 	return http.ListenAndServe(s.config.ServerPort, s.router)
 }
 

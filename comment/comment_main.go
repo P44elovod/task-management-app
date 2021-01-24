@@ -1,13 +1,11 @@
 package comment
 
 import (
-	"database/sql"
-
 	_comHttpDelivery "github.com/P44elovod/task-management-app/comment/delivery/http"
 	_comRepository "github.com/P44elovod/task-management-app/comment/repository/psql"
 	_comUsecase "github.com/P44elovod/task-management-app/comment/usecase"
 	"github.com/P44elovod/task-management-app/domain"
-	"github.com/gorilla/mux"
+	"github.com/P44elovod/task-management-app/project"
 )
 
 type CommentInit struct {
@@ -15,11 +13,11 @@ type CommentInit struct {
 	CommentUsecase    domain.CommentUseCase
 }
 
-func InitComment(r *mux.Router, db *sql.DB) *CommentInit {
-	cmr := _comRepository.NewPsqlCommentRepository(db)
+func InitComment(initData *project.InitData) *CommentInit {
+	cmr := _comRepository.NewPsqlCommentRepository(initData.DB)
 	cmu := _comUsecase.NewCommentUsecase(cmr)
 
-	_comHttpDelivery.New(r, cmu, cmr)
+	_comHttpDelivery.New(initData.Router, initData.Logger, cmu, cmr)
 
 	return &CommentInit{
 		CommentRepository: cmr,

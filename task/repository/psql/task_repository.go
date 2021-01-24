@@ -4,7 +4,6 @@ import (
 	"database/sql"
 
 	"github.com/P44elovod/task-management-app/domain"
-	"github.com/P44elovod/task-management-app/helpers"
 )
 
 type psqlTaskRepository struct {
@@ -38,14 +37,12 @@ func (tr *psqlTaskRepository) GetByID(id string) (domain.Task, error) {
 
 	rows, err := tr.db.Query("SELECT id, name, description, column_id, position FROM task WHERE id = $1", id)
 	if err != nil {
-		helpers.FailOnError(err, "Task DB query processing went wrong!")
 		return task, err
 	}
 
 	for rows.Next() {
 		err = rows.Scan(&task.ID, &task.Description, &task.Name, &task.ColumnID, &task.Priority)
 		if err != nil {
-			helpers.FailOnError(err, "Task DB row deserialization went wrong!")
 			return task, err
 		}
 	}
@@ -58,7 +55,6 @@ func (tr *psqlTaskRepository) GetAllByColumnID(id uint) ([]domain.Task, error) {
 
 	row, err := tr.db.Query("SELECT id, name, description, column_id, position, created_at FROM task WHERE column_id=$1 ORDER BY position", id)
 	if err != nil {
-		helpers.FailOnError(err, "Task DB query processing went wrong!")
 		return taskList, err
 	}
 
@@ -66,7 +62,6 @@ func (tr *psqlTaskRepository) GetAllByColumnID(id uint) ([]domain.Task, error) {
 		task := domain.Task{}
 		err = row.Scan(&task.ID, &task.Name, &task.Description, &task.ColumnID, &task.Priority, &task.CreatedAt)
 		if err != nil {
-			helpers.FailOnError(err, "Task DB row deserialization went wrong!")
 			return nil, err
 		}
 
@@ -79,7 +74,6 @@ func (tr *psqlTaskRepository) DeleteByID(id string) error {
 
 	_, err := tr.db.Exec("DELETE FROM task WHERE id=$1", id)
 	if err != nil {
-		helpers.FailOnError(err, "Deleting comment went wrong")
 		return err
 	}
 	return nil

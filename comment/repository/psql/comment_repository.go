@@ -4,7 +4,6 @@ import (
 	"database/sql"
 
 	"github.com/P44elovod/task-management-app/domain"
-	"github.com/P44elovod/task-management-app/helpers"
 )
 
 type psqlCommentRepository struct {
@@ -36,7 +35,6 @@ func (cmr *psqlCommentRepository) GetAllByTaskID(id string) ([]domain.Comment, e
 
 	rows, err := cmr.db.Query("SELECT id, text, task_id FROM comment WHERE task_id=$1 ORDER BY created_at DESC", id)
 	if err != nil {
-		helpers.FailOnError(err, "Comment DB query processing went wrong!")
 		return nil, err
 	}
 	var commentList []domain.Comment
@@ -44,7 +42,6 @@ func (cmr *psqlCommentRepository) GetAllByTaskID(id string) ([]domain.Comment, e
 		comment := domain.Comment{}
 		err = rows.Scan(&comment.ID, &comment.Text, &comment.TaskID)
 		if err != nil {
-			helpers.FailOnError(err, " Comment DB row deserialization went wrong!")
 			return nil, err
 		}
 
@@ -56,7 +53,6 @@ func (cmr *psqlCommentRepository) GetAllByTaskID(id string) ([]domain.Comment, e
 func (cmr *psqlCommentRepository) DeleteByID(id string) error {
 	_, err := cmr.db.Exec("DELETE FROM comment WHERE id=$1", id)
 	if err != nil {
-		helpers.FailOnError(err, "Deleting comment went wrong")
 		return err
 	}
 	return nil
@@ -66,7 +62,6 @@ func (cmr *psqlCommentRepository) DeleteAllByTaskID(id string) error {
 
 	_, err := cmr.db.Exec("DELETE FROM comment WHERE task_id=$1 RETURNING id", id)
 	if err != nil {
-		helpers.FailOnError(err, "Deleting comments went wrong")
 		return err
 	}
 	return nil

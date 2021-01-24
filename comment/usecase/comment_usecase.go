@@ -11,11 +11,3 @@ func NewCommentUsecase(cmr domain.CommentRepository) domain.CommentUseCase {
 		commentRepo: cmr,
 	}
 }
-
-func (cmu *commentUsecase) CreateComment(comment *domain.Comment) error {
-	err := cmu.commentRepo.StoreComment(comment)
-	if err != nil {
-		return err
-	}
-	return nil
-}

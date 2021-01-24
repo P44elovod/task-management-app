@@ -1,13 +1,11 @@
 package column
 
 import (
-	"database/sql"
-
 	_cHttpDelivery "github.com/P44elovod/task-management-app/column/delivery/http"
 	_cRepository "github.com/P44elovod/task-management-app/column/repository/psql"
 	_cUsecase "github.com/P44elovod/task-management-app/column/usecase"
 	"github.com/P44elovod/task-management-app/domain"
-	"github.com/gorilla/mux"
+	"github.com/P44elovod/task-management-app/project"
 )
 
 type ColumnInit struct {
@@ -15,11 +13,11 @@ type ColumnInit struct {
 	ColumnUsecase    domain.ColumnUsecase
 }
 
-func InitColumn(r *mux.Router, db *sql.DB, tr domain.TaskRepository) *ColumnInit {
-	cr := _cRepository.NewPsqlColumnRepository(db)
+func InitColumn(initData *project.InitData, tr domain.TaskRepository) *ColumnInit {
+	cr := _cRepository.NewPsqlColumnRepository(initData.DB)
 	cu := _cUsecase.NewColumnUsecase(cr, tr)
 
-	_cHttpDelivery.New(r, cu)
+	_cHttpDelivery.New(initData.Router, initData.Logger, cu)
 
 	return &ColumnInit{
 		ColumnRepository: cr,

@@ -35,7 +35,9 @@ func (p *projectUsecase) CreateProject(project *domain.Project) error {
 	}
 
 	err = p.columnUsecase.CreateColumn(&defaultColumn)
-	helpers.FailOnError(err, "Column storing went wrong")
+	if err != nil {
+		return err
+	}
 
 	project.Columns = append(project.Columns, defaultColumn)
 
@@ -55,29 +57,15 @@ func (p *projectUsecase) FetchAllProjects() ([]domain.Project, error) {
 func (p *projectUsecase) GetProjectByID(id string) (domain.Project, error) {
 	project, err := p.projectRepo.GetProjectByID(id)
 	if err != nil {
-		helpers.FailOnError(err, "Project querying went wrong")
 		return project, err
 	}
 
 	columnList, err := p.columnUsecase.GetColumnsWithTasksByProjectID(id)
 	if err != nil {
-		helpers.FailOnError(err, "Columns with tasks querying went wrong")
 		return project, err
 	}
 
 	project.Columns = columnList
 
 	return project, nil
-}
-
-func (p *projectUsecase) DeleteProject() error {
-	return nil
-}
-
-func (p *projectUsecase) DeleteAllProjects() error {
-	return nil
-}
-
-func (p *projectUsecase) UpdateProject() (uint, error) {
-	return 0, nil
 }
