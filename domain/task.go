@@ -15,13 +15,13 @@ type Task struct {
 type TaskUseCase interface {
 	CreateTask(task *Task) error
 	GetTaskWithCommentByID(id string) (Task, error)
-	// DeleteTaskByID()
-	// FetchTaskByID()
-	// FetchTasksByColumnID()
-
+	DeleteByID(id string) error
 }
 type TaskRepository interface {
 	StoreTask(task *Task) error
 	GetByID(id string) (Task, error)
 	GetAllByColumnID(id uint) ([]Task, error)
+	DeleteByID(id string) error
+	UpdateByID(taskList *Task) error
+	UpdateColumnID(oldColID, newColID uint) error
 }

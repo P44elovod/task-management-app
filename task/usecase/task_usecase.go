@@ -1,6 +1,9 @@
 package taskusecase
 
-import "github.com/P44elovod/task-management-app/domain"
+import (
+	"github.com/P44elovod/task-management-app/domain"
+	"github.com/P44elovod/task-management-app/helpers"
+)
 
 type taskUsecase struct {
 	taskRepo    domain.TaskRepository
@@ -35,4 +38,20 @@ func (tu *taskUsecase) GetTaskWithCommentByID(id string) (domain.Task, error) {
 	task.Comments = commentList
 
 	return task, nil
+}
+
+func (tu *taskUsecase) DeleteByID(id string) error {
+	err := tu.commentRepo.DeleteAllByTaskID(id)
+	if err != nil {
+		helpers.FailOnError(err, "Comments deleting went wrong")
+		return err
+	}
+
+	err = tu.taskRepo.DeleteByID(id)
+	if err != nil {
+		helpers.FailOnError(err, "Task deleting went wrong")
+		return err
+	}
+
+	return nil
 }

@@ -35,6 +35,48 @@ func (cr *psqlColumnRepository) GetColumnsByProjectID(id string) ([]domain.Colum
 	return columnList, nil
 }
 
+func (cr *psqlColumnRepository) GetByID(id string) (domain.Column, error) {
+
+	var column domain.Column
+
+	rows, err := cr.db.Query("SELECT id, name, position, project_id FROM project_column WHERE id=$1", id)
+	if err != nil {
+		helpers.FailOnError(err, "Column DB query processing went wrong!")
+		return column, err
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&column.ID, &column.Name, &column.Position, &column.ProjectID)
+		if err != nil {
+			helpers.FailOnError(err, "DB row deserialization went wrong!")
+			return column, err
+		}
+
+	}
+	return column, nil
+}
+
+func (cr *psqlColumnRepository) GetColumnIDByPositionAndProjectID(id, position uint) (uint, error) {
+
+	var ID uint
+
+	rows, err := cr.db.Query("SELECT id FROM project_column WHERE project_id=$1 AND position=$2", id, position)
+	if err != nil {
+		helpers.FailOnError(err, "Column DB query processing went wrong!")
+		return ID, err
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&ID)
+		if err != nil {
+			helpers.FailOnError(err, "Column DB row deserialization went wrong!")
+			return ID, err
+		}
+
+	}
+	return ID, nil
+}
+
 func (cr *psqlColumnRepository) StoreColumn(column *domain.Column) error {
 
 	tx, err := cr.db.Begin()
@@ -54,6 +96,15 @@ func (cr *psqlColumnRepository) StoreColumn(column *domain.Column) error {
 
 }
 
+func (cr *psqlColumnRepository) DeleteByID(id string) error {
+	_, err := cr.db.Exec("DELETE FROM project_column WHERE id=$1", id)
+	if err != nil {
+		helpers.FailOnError(err, "Deleting column went wrong")
+		return err
+	}
+	return nil
+}
+
 func (cr *psqlColumnRepository) CheckColumnNameExists(name *string) bool {
 	var count int
 	cr.db.QueryRow("SELECT COUNT(name) FROM project_column WHERE name=$1", name).Scan(&count)
@@ -62,4 +113,16 @@ func (cr *psqlColumnRepository) CheckColumnNameExists(name *string) bool {
 	}
 
 	return false
+}
+
+func (cr *psqlColumnRepository) CheckIfLastColumn(projectID uint) bool {
+
+	var count int
+	cr.db.QueryRow("Select COUNT(id) FROM project_column WHERE project_id=$1", projectID).Scan(&count)
+
+	if count > 1 {
+		return false
+	}
+
+	return true
 }

@@ -74,3 +74,39 @@ func (tr *psqlTaskRepository) GetAllByColumnID(id uint) ([]domain.Task, error) {
 	}
 	return taskList, nil
 }
+
+func (tr *psqlTaskRepository) DeleteByID(id string) error {
+
+	_, err := tr.db.Exec("DELETE FROM task WHERE id=$1", id)
+	if err != nil {
+		helpers.FailOnError(err, "Deleting comment went wrong")
+		return err
+	}
+	return nil
+}
+
+func (tr *psqlTaskRepository) UpdateByID(task *domain.Task) error {
+
+	_, err := tr.db.Exec("UPDATE task SET name=$1, description=$2,  column_id=$3, position=$4 WHERE id=$5",
+		task.Name,
+		task.Description,
+		task.ColumnID,
+		task.Priority,
+		task.ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (tr *psqlTaskRepository) UpdateColumnID(oldColID, newColID uint) error {
+	_, err := tr.db.Exec("UPDATE task SET column_id=$1 WHERE column_id=$5", newColID, oldColID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

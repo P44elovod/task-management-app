@@ -19,7 +19,7 @@ func InitComment(r *mux.Router, db *sql.DB) *CommentInit {
 	cmr := _comRepository.NewPsqlCommentRepository(db)
 	cmu := _comUsecase.NewCommentUsecase(cmr)
 
-	_comHttpDelivery.New(r, cmu)
+	_comHttpDelivery.New(r, cmu, cmr)
 
 	return &CommentInit{
 		CommentRepository: cmr,

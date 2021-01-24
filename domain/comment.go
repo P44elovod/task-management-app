@@ -8,12 +8,11 @@ type Comment struct {
 
 type CommentUseCase interface {
 	CreateComment(comment *Comment) error
-	// UpdateCommentByID()
-	// DeleteCommetByID()
-	// FetchAllCometsByTaskID ()
-
 }
 type CommentRepository interface {
 	StoreComment(comment *Comment) error
 	GetAllByTaskID(id string) ([]Comment, error)
+	DeleteByID(id string) error
+	DeleteAllByTaskID(id string) error
+	UpdateByID(comment *Comment) error
 }

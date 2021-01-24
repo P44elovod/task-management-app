@@ -34,7 +34,7 @@ func (cmr *psqlCommentRepository) StoreComment(comment *domain.Comment) error {
 
 func (cmr *psqlCommentRepository) GetAllByTaskID(id string) ([]domain.Comment, error) {
 
-	rows, err := cmr.db.Query("SELECT id, text, task_id FROM comment WHERE task_id=$1 ORDER BY created_at", id)
+	rows, err := cmr.db.Query("SELECT id, text, task_id FROM comment WHERE task_id=$1 ORDER BY created_at DESC", id)
 	if err != nil {
 		helpers.FailOnError(err, "Comment DB query processing went wrong!")
 		return nil, err
@@ -51,4 +51,29 @@ func (cmr *psqlCommentRepository) GetAllByTaskID(id string) ([]domain.Comment, e
 		commentList = append(commentList, comment)
 	}
 	return commentList, nil
+}
+
+func (cmr *psqlCommentRepository) DeleteByID(id string) error {
+	_, err := cmr.db.Exec("DELETE FROM comment WHERE id=$1", id)
+	if err != nil {
+		helpers.FailOnError(err, "Deleting comment went wrong")
+		return err
+	}
+	return nil
+}
+
+func (cmr *psqlCommentRepository) DeleteAllByTaskID(id string) error {
+
+	_, err := cmr.db.Exec("DELETE FROM comment WHERE task_id=$1 RETURNING id", id)
+	if err != nil {
+		helpers.FailOnError(err, "Deleting comments went wrong")
+		return err
+	}
+	return nil
+}
+
+func (cmr *psqlCommentRepository) UpdateByID(comment *domain.Comment) error {
+	_, err := cmr.db.Exec("UPDATE comment SET text=$1 WHERE id=$2", comment.Text, comment.ID)
+
+	return err
 }

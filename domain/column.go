@@ -11,11 +11,14 @@ type Column struct {
 type ColumnUsecase interface {
 	CreateColumn(column *Column) error
 	GetColumnsWithTasksByProjectID(id string) ([]Column, error)
-	// UpdateColumnByID()
-	// DeleteColumnByID()
+	DeleteByID(id string) error
 }
 type ColumnRepository interface {
 	StoreColumn(column *Column) error
 	CheckColumnNameExists(name *string) bool
 	GetColumnsByProjectID(id string) ([]Column, error)
+	GetByID(id string) (Column, error)
+	GetColumnIDByPositionAndProjectID(id, position uint) (uint, error)
+	DeleteByID(id string) error
+	CheckIfLastColumn(projectID uint) bool
 }

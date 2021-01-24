@@ -53,16 +53,6 @@ func (p *psqlProjectRepository) StoreProject(project *domain.Project) error {
 	return tx.Commit()
 }
 
-func (p *psqlProjectRepository) UpdateProject() (uint, error) {
-	return 0, nil
-}
-func (p *psqlProjectRepository) DeleteAllProjects() error {
-	return nil
-}
-func (p *psqlProjectRepository) DeleteProject() error {
-	return nil
-}
-
 func (p *psqlProjectRepository) GetProjectByID(id string) (domain.Project, error) {
 
 	var project domain.Project
@@ -81,4 +71,25 @@ func (p *psqlProjectRepository) GetProjectByID(id string) (domain.Project, error
 
 	}
 	return project, nil
+}
+
+func (p *psqlProjectRepository) DeleteProjectByID(id string) error {
+
+	_, err := p.db.Exec("DELETE FROM project WHERE id=$1", id)
+	if err != nil {
+		helpers.FailOnError(err, "Deleting column went wrong")
+		return err
+	}
+	return nil
+}
+
+func (p *psqlProjectRepository) UpdateByID(project *domain.Project) error {
+
+	_, err := p.db.Exec("UPDATE task SET name=$1, description=$2,  WHERE id=$3", project.Name, project.Description, project.ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

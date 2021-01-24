@@ -51,3 +51,50 @@ func (c *columnUsecase) GetColumnsWithTasksByProjectID(id string) ([]domain.Colu
 
 	return columnList, nil
 }
+
+func (c *columnUsecase) DeleteByID(id string) error {
+
+	var newColID uint
+
+	column, err := c.columnRepo.GetByID(id)
+	if err != nil {
+		helpers.FailOnError(err, "Querying column went wrong")
+		return err
+	}
+
+	isLast := c.columnRepo.CheckIfLastColumn(column.ProjectID)
+
+	if column.Position != 1 {
+		newColID, err = c.columnRepo.GetColumnIDByPositionAndProjectID(column.ProjectID, column.Position-1)
+		if err != nil {
+			helpers.FailOnError(err, "Querying columnID went wrong")
+			return err
+		}
+	}
+
+	if column.Position == 1 && isLast == false {
+		newColID, err = c.columnRepo.GetColumnIDByPositionAndProjectID(column.ProjectID, column.Position+1)
+		if err != nil {
+			helpers.FailOnError(err, "Querying columnID went wrong")
+			return err
+		}
+	}
+
+	if column.Position == 1 && isLast == true {
+		helpers.FailOnError(err, "The last column couldn't be deleted")
+		return err
+	}
+
+	err = c.teaskRepo.UpdateColumnID(column.ID, newColID)
+	if err != nil {
+		helpers.FailOnError(err, "ColumnID updating went wrong")
+		return err
+	}
+
+	err = c.columnRepo.DeleteByID(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

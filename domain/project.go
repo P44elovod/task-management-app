@@ -11,15 +11,10 @@ type ProjectUsecase interface {
 	CreateProject(project *Project) error
 	FetchAllProjects() ([]Project, error)
 	GetProjectByID(id string) (Project, error)
-	DeleteProject() error
-	DeleteAllProjects() error
-	UpdateProject() (uint, error)
 }
 type ProjectRepository interface {
 	FetchAllProjects() ([]Project, error)
 	GetProjectByID(id string) (Project, error)
 	StoreProject(project *Project) error
-	UpdateProject() (uint, error)
-	DeleteAllProjects() error
-	DeleteProject() error
+	DeleteProjectByID(id string) error
 }
