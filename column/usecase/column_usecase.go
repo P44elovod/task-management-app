@@ -9,14 +9,14 @@ import (
 
 type columnUsecase struct {
 	columnRepo domain.ColumnRepository
-	teaskRepo  domain.TaskRepository
+	taskRepo   domain.TaskRepository
 	logger     *logrus.Logger
 }
 
 func NewColumnUsecase(cr domain.ColumnRepository, tr domain.TaskRepository) domain.ColumnUsecase {
 	return &columnUsecase{
 		columnRepo: cr,
-		teaskRepo:  tr,
+		taskRepo:   tr,
 	}
 }
 
@@ -41,7 +41,7 @@ func (c *columnUsecase) GetColumnsWithTasksByProjectID(id string) ([]domain.Colu
 	}
 
 	for i := 0; i < len(columnList); i++ {
-		taskList, err := c.teaskRepo.GetAllByColumnID(columnList[i].ID)
+		taskList, err := c.taskRepo.GetAllByColumnID(columnList[i].ID)
 		if err != nil {
 			return nil, err
 		}
@@ -80,7 +80,7 @@ func (c *columnUsecase) DeleteByID(id string) error {
 		return err
 	}
 
-	err = c.teaskRepo.UpdateColumnID(column.ID, newColID)
+	err = c.taskRepo.UpdateColumnID(column.ID, newColID)
 	if err != nil {
 		return err
 	}
@@ -88,6 +88,27 @@ func (c *columnUsecase) DeleteByID(id string) error {
 	err = c.columnRepo.DeleteByID(id)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (c *columnUsecase) Update(column *domain.Column) error {
+	err := c.columnRepo.Update(column)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *columnUsecase) UpdatePosition(positionsList map[uint]uint) error {
+
+	for id, position := range positionsList {
+		err := c.columnRepo.UpdatePositions(id, position)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

@@ -8,13 +8,14 @@ type Project struct {
 }
 
 type ProjectUsecase interface {
-	CreateProject(project *Project) error
-	FetchAllProjects() ([]Project, error)
-	GetProjectByID(id string) (Project, error)
+	Create(project *Project) error
+	GetAll() ([]Project, error)
+	GetByID(id string) (Project, error)
+	DeleteByID(id string) error
 }
 type ProjectRepository interface {
-	FetchAllProjects() ([]Project, error)
-	GetProjectByID(id string) (Project, error)
-	StoreProject(project *Project) error
-	DeleteProjectByID(id string) error
+	Store(project *Project) error
+	GetAll() ([]Project, error)
+	GetByID(id string) (Project, error)
+	DeleteByID(id string) error
 }

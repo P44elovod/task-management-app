@@ -52,3 +52,12 @@ func (tu *taskUsecase) DeleteByID(id string) error {
 
 	return nil
 }
+
+func (tu *taskUsecase) Update(task *domain.Task) error {
+	err := tu.taskRepo.Update(task)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -16,7 +16,7 @@ func NewPsqlProjectleRepository(db *sql.DB) domain.ProjectRepository {
 	}
 }
 
-func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
+func (p *psqlProjectRepository) GetAll() ([]domain.Project, error) {
 	rows, err := p.db.Query("SELECT id, name, description FROM project ORDER BY name")
 	if err != nil {
 		return nil, err
@@ -34,25 +34,7 @@ func (p *psqlProjectRepository) FetchAllProjects() ([]domain.Project, error) {
 	return progectList, nil
 }
 
-func (p *psqlProjectRepository) StoreProject(project *domain.Project) error {
-
-	tx, err := p.db.Begin()
-	if err != nil {
-		return err
-	}
-
-	stmt, err := tx.Prepare("INSERT INTO project (name, description) VALUES ($1, $2) RETURNING id")
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
-	defer stmt.Close()
-
-	stmt.QueryRow(project.Name, project.Description).Scan(&project.ID)
-	return tx.Commit()
-}
-
-func (p *psqlProjectRepository) GetProjectByID(id string) (domain.Project, error) {
+func (p *psqlProjectRepository) GetByID(id string) (domain.Project, error) {
 
 	var project domain.Project
 	row, err := p.db.Query("SELECT id, name, description FROM project WHERE id = $1", id)
@@ -70,7 +52,25 @@ func (p *psqlProjectRepository) GetProjectByID(id string) (domain.Project, error
 	return project, nil
 }
 
-func (p *psqlProjectRepository) DeleteProjectByID(id string) error {
+func (p *psqlProjectRepository) Store(project *domain.Project) error {
+
+	tx, err := p.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	stmt, err := tx.Prepare("INSERT INTO project (name, description) VALUES ($1, $2) RETURNING id")
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	defer stmt.Close()
+
+	stmt.QueryRow(project.Name, project.Description).Scan(&project.ID)
+	return tx.Commit()
+}
+
+func (p *psqlProjectRepository) DeleteByID(id string) error {
 
 	_, err := p.db.Exec("DELETE FROM project WHERE id=$1", id)
 	if err != nil {

@@ -2,7 +2,6 @@ package commenthttpdelivery
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -66,9 +65,7 @@ func (ch *CommentHandler) DeleteByID() http.HandlerFunc {
 			return
 		}
 
-		res := fmt.Sprintf("id: %s", vars["id"])
-
-		helpers.RespondWithJSON(w, http.StatusOK, res)
+		helpers.RespondWithJSON(w, http.StatusOK, vars["id"])
 
 	}
 }
@@ -80,7 +77,7 @@ func (ch *CommentHandler) UpdateByID() http.HandlerFunc {
 		id, err := strconv.ParseUint(vars["id"], 10, 32)
 		if err != nil {
 			ch.logger.Error(err)
-			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid product ID")
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid comment ID")
 			return
 		}
 

@@ -20,8 +20,9 @@ func New(r *mux.Router, log *logrus.Logger, pu domain.ProjectUsecase) {
 		PUsecase: pu,
 	}
 
-	r.HandleFunc("/projects", handler.Fetch()).Methods("GET")
+	r.HandleFunc("/projects", handler.FetchList()).Methods("GET")
 	r.HandleFunc("/project/{id:[0-9]+}", handler.GetByID()).Methods("GET")
+	r.HandleFunc("/project/{id:[0-9]+}", handler.DelByID()).Methods("DELETE")
 	r.HandleFunc("/project/new", handler.Create()).Methods("POST")
 
 }
@@ -30,7 +31,7 @@ func (p *ProjectHandler) GetByID() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		project, err := p.PUsecase.GetProjectByID(vars["id"])
+		project, err := p.PUsecase.GetByID(vars["id"])
 		if err != nil {
 			p.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusBadRequest, "Project request went wrong")
@@ -42,10 +43,10 @@ func (p *ProjectHandler) GetByID() http.HandlerFunc {
 
 }
 
-func (p *ProjectHandler) Fetch() http.HandlerFunc {
+func (p *ProjectHandler) FetchList() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		projectsList, err := p.PUsecase.FetchAllProjects()
+		projectsList, err := p.PUsecase.GetAll()
 		if err != nil {
 			p.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusBadRequest, "Project list request went wrong")
@@ -68,7 +69,7 @@ func (p *ProjectHandler) Create() http.HandlerFunc {
 			return
 		}
 
-		err := p.PUsecase.CreateProject(&project)
+		err := p.PUsecase.Create(&project)
 		if err != nil {
 			p.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Rquested data is not reached")
@@ -78,6 +79,22 @@ func (p *ProjectHandler) Create() http.HandlerFunc {
 		defer r.Body.Close()
 		helpers.RespondWithJSON(w, http.StatusCreated, &project)
 
+	}
+
+}
+
+func (p *ProjectHandler) DelByID() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		err := p.PUsecase.DeleteByID(vars["id"])
+		if err != nil {
+			p.logger.Error(err)
+			helpers.RespondWithError(w, http.StatusInternalServerError, "Project hasn't been deleted")
+			return
+		}
+
+		helpers.RespondWithJSON(w, http.StatusOK, vars["id"])
 	}
 
 }

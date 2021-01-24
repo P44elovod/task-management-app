@@ -118,3 +118,15 @@ func (cr *psqlColumnRepository) CheckIfLastColumn(projectID uint) bool {
 
 	return true
 }
+
+func (cmr *psqlColumnRepository) Update(column *domain.Column) error {
+	_, err := cmr.db.Exec("UPDATE project_column SET name=$1, position=$2 WHERE id=$3", column.Name, column.Position, column.ID)
+
+	return err
+}
+
+func (cmr *psqlColumnRepository) UpdatePositions(id, position uint) error {
+	_, err := cmr.db.Exec("UPDATE project_column SET position=$1 WHERE id=$2", position, id)
+
+	return err
+}

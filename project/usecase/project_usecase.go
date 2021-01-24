@@ -19,9 +19,9 @@ func NewProjectUsecase(pr domain.ProjectRepository, cu domain.ColumnUsecase, tr 
 	}
 }
 
-func (p *projectUsecase) CreateProject(project *domain.Project) error {
+func (p *projectUsecase) Create(project *domain.Project) error {
 
-	err := p.projectRepo.StoreProject(project)
+	err := p.projectRepo.Store(project)
 	if err != nil {
 		return err
 	}
@@ -44,9 +44,9 @@ func (p *projectUsecase) CreateProject(project *domain.Project) error {
 	return nil
 }
 
-func (p *projectUsecase) FetchAllProjects() ([]domain.Project, error) {
+func (p *projectUsecase) GetAll() ([]domain.Project, error) {
 
-	projectsList, err := p.projectRepo.FetchAllProjects()
+	projectsList, err := p.projectRepo.GetAll()
 	if err != nil {
 		return nil, err
 	}
@@ -54,8 +54,9 @@ func (p *projectUsecase) FetchAllProjects() ([]domain.Project, error) {
 	return projectsList, nil
 }
 
-func (p *projectUsecase) GetProjectByID(id string) (domain.Project, error) {
-	project, err := p.projectRepo.GetProjectByID(id)
+func (p *projectUsecase) GetByID(id string) (domain.Project, error) {
+
+	project, err := p.projectRepo.GetByID(id)
 	if err != nil {
 		return project, err
 	}
@@ -68,4 +69,9 @@ func (p *projectUsecase) GetProjectByID(id string) (domain.Project, error) {
 	project.Columns = columnList
 
 	return project, nil
+}
+
+func (p *projectUsecase) DeleteByID(id string) error {
+
+	return nil
 }

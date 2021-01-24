@@ -12,6 +12,8 @@ type ColumnUsecase interface {
 	CreateColumn(column *Column) error
 	GetColumnsWithTasksByProjectID(id string) ([]Column, error)
 	DeleteByID(id string) error
+	Update(column *Column) error
+	UpdatePosition(positionsList map[uint]uint) error
 }
 type ColumnRepository interface {
 	StoreColumn(column *Column) error
@@ -21,4 +23,6 @@ type ColumnRepository interface {
 	GetColumnIDByPositionAndProjectID(id, position uint) (uint, error)
 	DeleteByID(id string) error
 	CheckIfLastColumn(projectID uint) bool
+	Update(column *Column) error
+	UpdatePositions(id, position uint) error
 }
