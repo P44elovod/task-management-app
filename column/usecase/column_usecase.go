@@ -22,6 +22,16 @@ func NewColumnUsecase(cr domain.ColumnRepository, tr domain.TaskRepository) doma
 
 func (c *columnUsecase) CreateColumn(column *domain.Column) error {
 
+	positions, err := c.PrepareShiftRightPositionsMap(column.ProjectID, column.Position)
+	if err != nil {
+		return err
+	}
+
+	err = c.UpdatePosition(positions)
+	if err != nil {
+		return err
+	}
+
 	if c.columnRepo.CheckColumnNameExists(&column.Name) == false {
 		err := c.columnRepo.StoreColumn(column)
 		if err != nil {
@@ -61,6 +71,10 @@ func (c *columnUsecase) DeleteByID(id uint) error {
 	}
 
 	isLast := c.columnRepo.CheckIfLastColumn(column.ProjectID)
+	newPositions, err := c.PrepareShiftRightPositionsMap(id, column.Position)
+	if err != nil {
+		return err
+	}
 
 	if column.Position != 1 {
 		newColID, err = c.columnRepo.GetColumnIDByPositionAndProjectID(column.ProjectID, column.Position-1)
@@ -74,9 +88,15 @@ func (c *columnUsecase) DeleteByID(id uint) error {
 		if err != nil {
 			return err
 		}
+
 	}
 
 	if column.Position == 1 && isLast == true {
+		return err
+	}
+
+	err = c.UpdatePosition(newPositions)
+	if err != nil {
 		return err
 	}
 
@@ -112,4 +132,40 @@ func (c *columnUsecase) UpdatePosition(positionsList map[uint]uint) error {
 	}
 
 	return nil
+}
+
+func (c *columnUsecase) PrepareShiftRightPositionsMap(projectID, startPosition uint) (map[uint]uint, error) {
+	positions := make(map[uint]uint)
+
+	columns, err := c.columnRepo.GetColumnsByProjectID(projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := 0; i < len(columns); i++ {
+		if columns[i].Position > startPosition {
+			positions[columns[i].ID] = columns[i].Position + 1
+		}
+
+	}
+
+	return positions, nil
+}
+
+func (c *columnUsecase) PrepareShiftLeftPositionsMap(projectID, startPosition uint) (map[uint]uint, error) {
+	positions := make(map[uint]uint)
+
+	columns, err := c.columnRepo.GetColumnsByProjectID(projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := 0; i < len(columns); i++ {
+		if columns[i].Position > startPosition {
+			positions[columns[i].ID] = columns[i].Position - 1
+		}
+
+	}
+
+	return positions, nil
 }

@@ -14,6 +14,8 @@ type ColumnUsecase interface {
 	DeleteByID(id uint) error
 	Update(column *Column) error
 	UpdatePosition(positionsList map[uint]uint) error
+	PrepareShiftRightPositionsMap(projectID, startPosition uint) (map[uint]uint, error)
+	PrepareShiftLeftPositionsMap(projectID, startPosition uint) (map[uint]uint, error)
 }
 type ColumnRepository interface {
 	StoreColumn(column *Column) error
