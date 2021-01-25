@@ -37,8 +37,8 @@ CREATE TABLE "comment" (
   "deleted_at" timestamp
 );
 
-ALTER TABLE "project_column" ADD FOREIGN KEY ("project_id") REFERENCES "project" ("id");
+ALTER TABLE "project_column" ADD FOREIGN KEY ("project_id") REFERENCES "project" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "task" ADD FOREIGN KEY ("column_id") REFERENCES "project_column" ("id");
+ALTER TABLE "task" ADD FOREIGN KEY ("column_id") REFERENCES "project_column" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "comment" ADD FOREIGN KEY ("task_id") REFERENCES "task" ("id");
+ALTER TABLE "comment" ADD FOREIGN KEY ("task_id") REFERENCES "task" ("id") ON DELETE CASCADE;

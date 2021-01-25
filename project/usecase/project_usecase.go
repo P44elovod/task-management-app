@@ -72,6 +72,18 @@ func (p *projectUsecase) GetByID(id uint) (domain.Project, error) {
 }
 
 func (p *projectUsecase) DeleteByID(id uint) error {
+	err := p.projectRepo.DeleteByID(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *projectUsecase) UpdateByID(project *domain.Project) error {
+	err := p.projectRepo.UpdateByID(project)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

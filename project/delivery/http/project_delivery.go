@@ -24,6 +24,7 @@ func New(r *mux.Router, log *logrus.Logger, pu domain.ProjectUsecase) {
 	r.HandleFunc("/projects", handler.FetchList()).Methods("GET")
 	r.HandleFunc("/project/{id:[0-9]+}", handler.GetByID()).Methods("GET")
 	r.HandleFunc("/project/{id:[0-9]+}", handler.DelByID()).Methods("DELETE")
+	r.HandleFunc("/project/{id:[0-9]+}", handler.UpdateByID()).Methods("PUT")
 	r.HandleFunc("/project/new", handler.Create()).Methods("POST")
 
 }
@@ -112,4 +113,35 @@ func (p *ProjectHandler) DelByID() http.HandlerFunc {
 		helpers.RespondWithJSON(w, http.StatusOK, id)
 	}
 
+}
+
+func (p *ProjectHandler) UpdateByID() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+
+		id, err := strconv.ParseUint(vars["id"], 10, 32)
+		if err != nil {
+			p.logger.Error(err)
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid project ID")
+			return
+		}
+
+		var project domain.Project
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&project); err != nil {
+			p.logger.Error(err)
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+			return
+		}
+		defer r.Body.Close()
+		project.ID = uint(id)
+
+		if err := p.PUsecase.UpdateByID(&project); err != nil {
+			p.logger.Error(err)
+			helpers.RespondWithError(w, http.StatusInternalServerError, "Project not updated")
+			return
+		}
+
+		helpers.RespondWithJSON(w, http.StatusOK, project)
+	}
 }
