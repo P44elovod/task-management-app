@@ -86,6 +86,12 @@ func (c *ColumnHandler) UpdateByID() http.HandlerFunc {
 }
 
 func (c *ColumnHandler) UpdatePosiotionByID() http.HandlerFunc {
+
+	type positions struct {
+		id       uint
+		position uint
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
@@ -96,7 +102,7 @@ func (c *ColumnHandler) UpdatePosiotionByID() http.HandlerFunc {
 			return
 		}
 
-		var positionsList map[uint]uint
+		var positionsList []positions
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&positionsList); err != nil {
 			c.logger.Error(err)
@@ -105,7 +111,12 @@ func (c *ColumnHandler) UpdatePosiotionByID() http.HandlerFunc {
 		}
 		defer r.Body.Close()
 
-		if err := c.CUsecase.UpdatePosition(positionsList); err != nil {
+		positionsMap := make(map[uint]uint)
+		for i := 0; i < len(positionsList); i++ {
+			positionsMap[positionsList[i].id] = positionsList[i].position
+		}
+
+		if err := c.CUsecase.UpdatePosition(positionsMap); err != nil {
 			c.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Columns postions not updated")
 			return
