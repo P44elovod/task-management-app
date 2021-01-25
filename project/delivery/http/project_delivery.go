@@ -36,7 +36,7 @@ func (p *ProjectHandler) GetByID() http.HandlerFunc {
 		id, err := strconv.ParseUint(vars["id"], 10, 32)
 		if err != nil {
 			p.logger.Error(err, id)
-			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid column ID")
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid project ID")
 			return
 		}
 
@@ -80,7 +80,7 @@ func (p *ProjectHandler) Create() http.HandlerFunc {
 
 		if err := p.PUsecase.Create(&project); err != nil {
 			p.logger.Error(err)
-			helpers.RespondWithError(w, http.StatusInternalServerError, "Rquested data is not reached")
+			helpers.RespondWithError(w, http.StatusInternalServerError, "Requested data is not reached")
 			return
 		}
 
@@ -99,7 +99,7 @@ func (p *ProjectHandler) DelByID() http.HandlerFunc {
 		id, err := strconv.ParseUint(vars["id"], 10, 32)
 		if err != nil {
 			p.logger.Error(err, id)
-			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid column ID")
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid project ID")
 			return
 		}
 
@@ -109,7 +109,7 @@ func (p *ProjectHandler) DelByID() http.HandlerFunc {
 			return
 		}
 
-		helpers.RespondWithJSON(w, http.StatusOK, vars["id"])
+		helpers.RespondWithJSON(w, http.StatusOK, id)
 	}
 
 }

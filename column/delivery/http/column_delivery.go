@@ -132,7 +132,7 @@ func (c *ColumnHandler) DeleteByID() http.HandlerFunc {
 			return
 		}
 
-		helpers.RespondWithJSON(w, http.StatusOK, vars["id"])
+		helpers.RespondWithJSON(w, http.StatusOK, id)
 
 	}
 }

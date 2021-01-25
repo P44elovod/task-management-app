@@ -119,7 +119,7 @@ func (th *TaskHandler) DeleteByID() http.HandlerFunc {
 
 		if err := th.TUsecase.DeleteByID(uint(id)); err != nil {
 			th.logger.Error(err)
-			helpers.RespondWithError(w, http.StatusInternalServerError, "Comment hasn't been deleted")
+			helpers.RespondWithError(w, http.StatusInternalServerError, "Task hasn't been deleted")
 			return
 		}
 

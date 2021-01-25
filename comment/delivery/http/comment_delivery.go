@@ -61,7 +61,7 @@ func (ch *CommentHandler) DeleteByID() http.HandlerFunc {
 		id, err := strconv.ParseUint(vars["id"], 10, 32)
 		if err != nil {
 			ch.logger.Error(err)
-			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid column ID")
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid comment ID")
 			return
 		}
 
