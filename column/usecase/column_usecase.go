@@ -2,7 +2,6 @@ package columnusacase
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/P44elovod/task-management-app/domain"
 	"github.com/sirupsen/logrus"
@@ -28,13 +27,12 @@ func (c *columnUsecase) CreateColumn(column *domain.Column) error {
 		return err
 	}
 
-	if column.Position < columns[len(columns)-1].Position {
+	if len(columns) >= 1 && column.Position <= columns[len(columns)-1].Position {
 
 		positions, err := c.PrepareShiftRightPositionsMap(column.ProjectID, column.Position)
 		if err != nil {
 			return err
 		}
-		fmt.Println(positions)
 
 		err = c.UpdatePosition(positions)
 		if err != nil {
@@ -82,9 +80,14 @@ func (c *columnUsecase) DeleteByID(id uint) error {
 	}
 
 	isLast := c.columnRepo.CheckIfLastColumn(column.ProjectID)
-	newPositions, err := c.PrepareShiftRightPositionsMap(id, column.Position)
+	newPositions, err := c.PrepareShiftLeftPositionsMap(column.ProjectID, column.Position)
 	if err != nil {
 		return err
+	}
+
+	if isLast == true {
+
+		return errors.New("The last column couldn be deleted")
 	}
 
 	if column.Position != 1 {
@@ -100,10 +103,6 @@ func (c *columnUsecase) DeleteByID(id uint) error {
 			return err
 		}
 
-	}
-
-	if column.Position == 1 && isLast == true {
-		return err
 	}
 
 	err = c.UpdatePosition(newPositions)
@@ -171,7 +170,7 @@ func (c *columnUsecase) PrepareShiftLeftPositionsMap(projectID, startPosition ui
 		return nil, err
 	}
 
-	for i := 0; i <= len(columns); i++ {
+	for i := 0; i < len(columns); i++ {
 		if columns[i].Position > startPosition {
 			positions[columns[i].ID] = columns[i].Position - 1
 		}

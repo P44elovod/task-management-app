@@ -71,7 +71,12 @@ func (ch *CommentHandler) DeleteByID() http.HandlerFunc {
 			return
 		}
 
-		helpers.RespondWithJSON(w, http.StatusOK, id)
+		response := map[string]interface{}{
+			"id":     id,
+			"status": "success",
+		}
+
+		helpers.RespondWithJSON(w, http.StatusOK, response)
 
 	}
 }

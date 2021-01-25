@@ -24,8 +24,9 @@ func New(r *mux.Router, log *logrus.Logger, tu domain.TaskUseCase) {
 
 	r.HandleFunc("/task/new", handler.Create()).Methods("POST")
 	r.HandleFunc("/task/{id:[0-9]+}", handler.GetByID()).Methods("GET")
-	r.HandleFunc("/comment/{id:[0-9]+}", handler.DeleteByID()).Methods("DELETE")
-	r.HandleFunc("/comment/{id:[0-9]+}", handler.UpdateByID()).Methods("PUT")
+	r.HandleFunc("/task/{id:[0-9]+}", handler.DeleteByID()).Methods("DELETE")
+	r.HandleFunc("/task/{id:[0-9]+}", handler.UpdateByID()).Methods("PUT")
+	r.HandleFunc("/task/priority", handler.UpdatePriority()).Methods("PUT")
 
 }
 
@@ -64,14 +65,14 @@ func (th *TaskHandler) GetByID() http.HandlerFunc {
 			return
 		}
 
-		projectsList, err := th.TUsecase.GetTaskWithCommentByID(uint(id))
+		taskList, err := th.TUsecase.GetTaskWithCommentByID(uint(id))
 		if err != nil {
 			th.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusBadRequest, "Task request went wrong")
 			return
 		}
 
-		helpers.RespondWithJSON(w, http.StatusOK, projectsList)
+		helpers.RespondWithJSON(w, http.StatusOK, taskList)
 	}
 }
 
@@ -123,7 +124,54 @@ func (th *TaskHandler) DeleteByID() http.HandlerFunc {
 			return
 		}
 
-		helpers.RespondWithJSON(w, http.StatusOK, id)
+		response := map[string]interface{}{
+			"id":     id,
+			"status": "success",
+		}
 
+		helpers.RespondWithJSON(w, http.StatusOK, response)
+
+	}
+}
+
+func (th *TaskHandler) UpdatePriority() http.HandlerFunc {
+
+	type Priority struct {
+		ID       uint `json:"id"`
+		Priority uint `json:"priority"`
+	}
+
+	type Priorities struct {
+		Priorities []Priority `json:"priorities"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		var priorityList Priorities
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&priorityList); err != nil {
+			th.logger.Error(err)
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+			return
+		}
+		defer r.Body.Close()
+
+		priorityMap := make(map[uint]uint)
+		for i := 0; i < len(priorityList.Priorities); i++ {
+			priorityMap[priorityList.Priorities[i].ID] = priorityList.Priorities[i].Priority
+		}
+
+		if err := th.TUsecase.UpdateUpdatePriority(priorityMap); err != nil {
+			th.logger.Error(err)
+			helpers.RespondWithError(w, http.StatusInternalServerError, "Columns postions not updated")
+			return
+		}
+
+		response := map[string]interface{}{
+			"priorities": priorityMap,
+			"status":     "success",
+		}
+
+		helpers.RespondWithJSON(w, http.StatusOK, response)
 	}
 }

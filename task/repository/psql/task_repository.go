@@ -113,3 +113,9 @@ func (tr *psqlTaskRepository) UpdateColumnID(oldColID, newColID uint) error {
 
 	return nil
 }
+
+func (tr *psqlTaskRepository) UpdatePriority(id, priority uint) error {
+	_, err := tr.db.Exec("UPDATE task SET position=$1 WHERE id=$2", priority, id)
+
+	return err
+}

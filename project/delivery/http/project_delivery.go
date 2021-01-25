@@ -2,7 +2,6 @@ package projecthttpdelivery
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -112,8 +111,11 @@ func (p *ProjectHandler) DelByID() http.HandlerFunc {
 			return
 		}
 
-		respond := fmt.Sprintf("id: %d", id)
-		helpers.RespondWithJSON(w, http.StatusOK, respond)
+		response := map[string]interface{}{
+			"id":     id,
+			"status": "success",
+		}
+		helpers.RespondWithJSON(w, http.StatusOK, response)
 	}
 
 }

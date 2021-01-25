@@ -17,6 +17,9 @@ type TaskUseCase interface {
 	GetTaskWithCommentByID(id uint) (Task, error)
 	DeleteByID(id uint) error
 	Update(taskList *Task) error
+	UpdateUpdatePriority(positionsList map[uint]uint) error
+	PrepareShiftDownPriorityMap(columnID, startPosition uint) (map[uint]uint, error)
+	PrepareShiftUpPriorityMap(columnID, startPosition uint) (map[uint]uint, error)
 }
 type TaskRepository interface {
 	StoreTask(task *Task) error
@@ -26,4 +29,5 @@ type TaskRepository interface {
 	DeleteByColumnID(id uint) error
 	Update(taskList *Task) error
 	UpdateColumnID(oldColID, newColID uint) error
+	UpdatePriority(id, priority uint) error
 }

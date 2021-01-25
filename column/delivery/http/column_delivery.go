@@ -2,7 +2,6 @@ package columnhttpdelivery
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -25,7 +24,7 @@ func New(r *mux.Router, log *logrus.Logger, cu domain.ColumnUsecase) {
 
 	r.HandleFunc("/column/new", handler.Create()).Methods("POST")
 	r.HandleFunc("/column/{id:[0-9]+}", handler.UpdateByID()).Methods("PUT")
-	r.HandleFunc("/column/{id:[0-9]+}/move", handler.UpdatePosiotionByID()).Methods("PUT")
+	r.HandleFunc("/column/position", handler.UpdatePosiotion()).Methods("PUT")
 	r.HandleFunc("/column/{id:[0-9]+}", handler.DeleteByID()).Methods("DELETE")
 
 }
@@ -82,28 +81,23 @@ func (c *ColumnHandler) UpdateByID() http.HandlerFunc {
 			return
 		}
 
-		helpers.RespondWithJSON(w, http.StatusOK, column)
+		helpers.RespondWithJSON(w, http.StatusOK, &column)
 	}
 }
 
-func (c *ColumnHandler) UpdatePosiotionByID() http.HandlerFunc {
+func (c *ColumnHandler) UpdatePosiotion() http.HandlerFunc {
+	type Position struct {
+		ID       uint `json:"id"`
+		Position uint `json:"position"`
+	}
 
-	type positions struct {
-		id       uint
-		position uint
+	type Positions struct {
+		Positions []Position `json:"positions"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
 
-		id, err := strconv.ParseUint(vars["id"], 10, 32)
-		if err != nil {
-			c.logger.Error(err, id)
-			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid column ID")
-			return
-		}
-
-		var positionsList []positions
+		var positionsList Positions
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&positionsList); err != nil {
 			c.logger.Error(err)
@@ -113,8 +107,8 @@ func (c *ColumnHandler) UpdatePosiotionByID() http.HandlerFunc {
 		defer r.Body.Close()
 
 		positionsMap := make(map[uint]uint)
-		for i := 0; i < len(positionsList); i++ {
-			positionsMap[positionsList[i].id] = positionsList[i].position
+		for i := 0; i < len(positionsList.Positions); i++ {
+			positionsMap[positionsList.Positions[i].ID] = positionsList.Positions[i].Position
 		}
 
 		if err := c.CUsecase.UpdatePosition(positionsMap); err != nil {
@@ -123,7 +117,12 @@ func (c *ColumnHandler) UpdatePosiotionByID() http.HandlerFunc {
 			return
 		}
 
-		helpers.RespondWithJSON(w, http.StatusOK, positionsList)
+		response := map[string]interface{}{
+			"positions": positionsList,
+			"status":    "success",
+		}
+
+		helpers.RespondWithJSON(w, http.StatusOK, response)
 	}
 }
 
@@ -144,8 +143,11 @@ func (c *ColumnHandler) DeleteByID() http.HandlerFunc {
 			return
 		}
 
-		respond := fmt.Sprintf("id: %d", id)
-		helpers.RespondWithJSON(w, http.StatusOK, respond)
+		response := map[string]interface{}{
+			"id":     id,
+			"status": "success",
+		}
+		helpers.RespondWithJSON(w, http.StatusOK, response)
 
 	}
 }
