@@ -81,7 +81,7 @@ func (p *psqlProjectRepository) DeleteByID(id uint) error {
 
 func (p *psqlProjectRepository) UpdateByID(project *domain.Project) error {
 
-	_, err := p.db.Exec("UPDATE task SET name=$1, description=$2,  WHERE id=$3", project.Name, project.Description, project.ID)
+	_, err := p.db.Exec("UPDATE task SET name=$1, description=$2  WHERE id=$3", project.Name, project.Description, project.ID)
 
 	if err != nil {
 		return err

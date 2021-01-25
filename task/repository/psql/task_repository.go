@@ -105,7 +105,7 @@ func (tr *psqlTaskRepository) Update(task *domain.Task) error {
 }
 
 func (tr *psqlTaskRepository) UpdateColumnID(oldColID, newColID uint) error {
-	_, err := tr.db.Exec("UPDATE task SET column_id=$1 WHERE column_id=$5", newColID, oldColID)
+	_, err := tr.db.Exec("UPDATE task SET column_id=$1 WHERE column_id=$2", newColID, oldColID)
 
 	if err != nil {
 		return err

@@ -2,7 +2,6 @@ package apiserver
 
 import (
 	"github.com/P44elovod/task-management-app/config"
-	"github.com/P44elovod/task-management-app/helpers"
 
 	_column "github.com/P44elovod/task-management-app/column"
 	_comment "github.com/P44elovod/task-management-app/comment"
@@ -18,7 +17,11 @@ type Api struct {
 func (a *Api) Start(config *config.Config) error {
 	srv := a.server.newServer(config)
 	db, err := a.db.newDB(config)
-	helpers.FailOnError(err, "database connection doesn't work")
+	if err != nil {
+		srv.logger.Error(err)
+		return err
+	}
+	srv.logger.Info("Database Inited")
 
 	initData := _project.InitData{
 		Router: srv.router,
@@ -42,4 +45,6 @@ func initEntities(initData *_project.InitData) {
 	column := _column.InitColumn(initData, task.TaskRepository)
 
 	_project.InitProject(initData, column.ColumnUsecase, task.TaskRepository)
+
+	initData.Logger.Info("Entities Inited")
 }

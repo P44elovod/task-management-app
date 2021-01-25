@@ -2,6 +2,7 @@ package columnhttpdelivery
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -13,13 +14,13 @@ import (
 
 type ColumnHandler struct {
 	CUsecase domain.ColumnUsecase
-	CRepo    domain.ColumnRepository
 	logger   *logrus.Logger
 }
 
 func New(r *mux.Router, log *logrus.Logger, cu domain.ColumnUsecase) {
 	handler := &ColumnHandler{
 		CUsecase: cu,
+		logger:   log,
 	}
 
 	r.HandleFunc("/column/new", handler.Create()).Methods("POST")
@@ -143,7 +144,8 @@ func (c *ColumnHandler) DeleteByID() http.HandlerFunc {
 			return
 		}
 
-		helpers.RespondWithJSON(w, http.StatusOK, id)
+		respond := fmt.Sprintf("id: %d", id)
+		helpers.RespondWithJSON(w, http.StatusOK, respond)
 
 	}
 }

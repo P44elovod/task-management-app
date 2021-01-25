@@ -2,6 +2,7 @@ package projecthttpdelivery
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -19,6 +20,7 @@ type ProjectHandler struct {
 func New(r *mux.Router, log *logrus.Logger, pu domain.ProjectUsecase) {
 	handler := &ProjectHandler{
 		PUsecase: pu,
+		logger:   log,
 	}
 
 	r.HandleFunc("/projects", handler.FetchList()).Methods("GET")
@@ -110,7 +112,8 @@ func (p *ProjectHandler) DelByID() http.HandlerFunc {
 			return
 		}
 
-		helpers.RespondWithJSON(w, http.StatusOK, id)
+		respond := fmt.Sprintf("id: %d", id)
+		helpers.RespondWithJSON(w, http.StatusOK, respond)
 	}
 
 }

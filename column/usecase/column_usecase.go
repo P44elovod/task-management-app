@@ -2,6 +2,7 @@ package columnusacase
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/P44elovod/task-management-app/domain"
 	"github.com/sirupsen/logrus"
@@ -22,14 +23,24 @@ func NewColumnUsecase(cr domain.ColumnRepository, tr domain.TaskRepository) doma
 
 func (c *columnUsecase) CreateColumn(column *domain.Column) error {
 
-	positions, err := c.PrepareShiftRightPositionsMap(column.ProjectID, column.Position)
+	columns, err := c.columnRepo.GetColumnsByProjectID(column.ProjectID)
 	if err != nil {
 		return err
 	}
 
-	err = c.UpdatePosition(positions)
-	if err != nil {
-		return err
+	if column.Position < columns[len(columns)-1].Position {
+
+		positions, err := c.PrepareShiftRightPositionsMap(column.ProjectID, column.Position)
+		if err != nil {
+			return err
+		}
+		fmt.Println(positions)
+
+		err = c.UpdatePosition(positions)
+		if err != nil {
+			return err
+		}
+
 	}
 
 	if c.columnRepo.CheckColumnNameExists(&column.Name) == false {
@@ -143,7 +154,7 @@ func (c *columnUsecase) PrepareShiftRightPositionsMap(projectID, startPosition u
 	}
 
 	for i := 0; i < len(columns); i++ {
-		if columns[i].Position > startPosition {
+		if columns[i].Position >= startPosition {
 			positions[columns[i].ID] = columns[i].Position + 1
 		}
 
@@ -160,7 +171,7 @@ func (c *columnUsecase) PrepareShiftLeftPositionsMap(projectID, startPosition ui
 		return nil, err
 	}
 
-	for i := 0; i < len(columns); i++ {
+	for i := 0; i <= len(columns); i++ {
 		if columns[i].Position > startPosition {
 			positions[columns[i].ID] = columns[i].Position - 1
 		}

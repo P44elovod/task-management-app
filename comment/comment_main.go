@@ -19,6 +19,8 @@ func InitComment(initData *project.InitData) *CommentInit {
 
 	_comHttpDelivery.New(initData.Router, initData.Logger, cmu, cmr)
 
+	initData.Logger.Info("Comment Inited")
+
 	return &CommentInit{
 		CommentRepository: cmr,
 		CommentUsecase:    cmu,
