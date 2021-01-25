@@ -31,7 +31,7 @@ func (tr *psqlTaskRepository) StoreTask(task *domain.Task) error {
 	return tx.Commit()
 }
 
-func (tr *psqlTaskRepository) GetByID(id string) (domain.Task, error) {
+func (tr *psqlTaskRepository) GetByID(id uint) (domain.Task, error) {
 
 	var task domain.Task
 
@@ -70,7 +70,7 @@ func (tr *psqlTaskRepository) GetAllByColumnID(id uint) ([]domain.Task, error) {
 	return taskList, nil
 }
 
-func (tr *psqlTaskRepository) DeleteByID(id string) error {
+func (tr *psqlTaskRepository) DeleteByID(id uint) error {
 
 	_, err := tr.db.Exec("DELETE FROM task WHERE id=$1", id)
 	if err != nil {
@@ -79,7 +79,7 @@ func (tr *psqlTaskRepository) DeleteByID(id string) error {
 	return nil
 }
 
-func (tr *psqlTaskRepository) DeleteByColumnID(id string) error {
+func (tr *psqlTaskRepository) DeleteByColumnID(id uint) error {
 
 	_, err := tr.db.Exec("DELETE FROM task WHERE column_id=$1", id)
 	if err != nil {

@@ -54,7 +54,7 @@ func (p *projectUsecase) GetAll() ([]domain.Project, error) {
 	return projectsList, nil
 }
 
-func (p *projectUsecase) GetByID(id string) (domain.Project, error) {
+func (p *projectUsecase) GetByID(id uint) (domain.Project, error) {
 
 	project, err := p.projectRepo.GetByID(id)
 	if err != nil {
@@ -71,7 +71,7 @@ func (p *projectUsecase) GetByID(id string) (domain.Project, error) {
 	return project, nil
 }
 
-func (p *projectUsecase) DeleteByID(id string) error {
+func (p *projectUsecase) DeleteByID(id uint) error {
 
 	return nil
 }

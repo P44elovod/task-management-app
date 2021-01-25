@@ -14,7 +14,7 @@ func NewPsqlColumnRepository(db *sql.DB) domain.ColumnRepository {
 	return &psqlColumnRepository{db: db}
 }
 
-func (cr *psqlColumnRepository) GetColumnsByProjectID(id string) ([]domain.Column, error) {
+func (cr *psqlColumnRepository) GetColumnsByProjectID(id uint) ([]domain.Column, error) {
 	rows, err := cr.db.Query("SELECT id, name, position, project_id FROM project_column WHERE project_id=$1 ORDER BY position", id)
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (cr *psqlColumnRepository) GetColumnsByProjectID(id string) ([]domain.Colum
 	return columnList, nil
 }
 
-func (cr *psqlColumnRepository) GetByID(id string) (domain.Column, error) {
+func (cr *psqlColumnRepository) GetByID(id uint) (domain.Column, error) {
 
 	var column domain.Column
 
@@ -89,7 +89,7 @@ func (cr *psqlColumnRepository) StoreColumn(column *domain.Column) error {
 
 }
 
-func (cr *psqlColumnRepository) DeleteByID(id string) error {
+func (cr *psqlColumnRepository) DeleteByID(id uint) error {
 	_, err := cr.db.Exec("DELETE FROM project_column WHERE id=$1", id)
 	if err != nil {
 		return err

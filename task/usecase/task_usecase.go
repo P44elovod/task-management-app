@@ -25,7 +25,7 @@ func (tu *taskUsecase) CreateTask(task *domain.Task) error {
 	return nil
 }
 
-func (tu *taskUsecase) GetTaskWithCommentByID(id string) (domain.Task, error) {
+func (tu *taskUsecase) GetTaskWithCommentByID(id uint) (domain.Task, error) {
 
 	task, err := tu.taskRepo.GetByID(id)
 
@@ -39,7 +39,7 @@ func (tu *taskUsecase) GetTaskWithCommentByID(id string) (domain.Task, error) {
 	return task, nil
 }
 
-func (tu *taskUsecase) DeleteByID(id string) error {
+func (tu *taskUsecase) DeleteByID(id uint) error {
 	err := tu.commentRepo.DeleteAllByTaskID(id)
 	if err != nil {
 		return err

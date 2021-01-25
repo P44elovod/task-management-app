@@ -33,7 +33,7 @@ func (c *columnUsecase) CreateColumn(column *domain.Column) error {
 	return errors.New("Column name should be unique")
 }
 
-func (c *columnUsecase) GetColumnsWithTasksByProjectID(id string) ([]domain.Column, error) {
+func (c *columnUsecase) GetColumnsWithTasksByProjectID(id uint) ([]domain.Column, error) {
 
 	columnList, err := c.columnRepo.GetColumnsByProjectID(id)
 	if err != nil {
@@ -51,7 +51,7 @@ func (c *columnUsecase) GetColumnsWithTasksByProjectID(id string) ([]domain.Colu
 	return columnList, nil
 }
 
-func (c *columnUsecase) DeleteByID(id string) error {
+func (c *columnUsecase) DeleteByID(id uint) error {
 
 	var newColID uint
 

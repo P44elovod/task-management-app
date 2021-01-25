@@ -10,8 +10,8 @@ type CommentUseCase interface{}
 
 type CommentRepository interface {
 	StoreComment(comment *Comment) error
-	GetAllByTaskID(id string) ([]Comment, error)
-	DeleteByID(id string) error
-	DeleteAllByTaskID(id string) error
+	GetAllByTaskID(id uint) ([]Comment, error)
+	DeleteByID(id uint) error
+	DeleteAllByTaskID(id uint) error
 	UpdateByID(comment *Comment) error
 }

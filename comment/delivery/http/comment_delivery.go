@@ -41,8 +41,7 @@ func (ch *CommentHandler) Create() http.HandlerFunc {
 			return
 		}
 
-		err := ch.CMRepo.StoreComment(&comment)
-		if err != nil {
+		if err := ch.CMRepo.StoreComment(&comment); err != nil {
 			ch.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Comment not created")
 			return
@@ -58,14 +57,21 @@ func (ch *CommentHandler) Create() http.HandlerFunc {
 func (ch *CommentHandler) DeleteByID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		err := ch.CMRepo.DeleteByID(vars["id"])
+
+		id, err := strconv.ParseUint(vars["id"], 10, 32)
 		if err != nil {
+			ch.logger.Error(err)
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid column ID")
+			return
+		}
+
+		if err := ch.CMRepo.DeleteByID(uint(id)); err != nil {
 			ch.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Comment hasn't been deleted")
 			return
 		}
 
-		helpers.RespondWithJSON(w, http.StatusOK, vars["id"])
+		helpers.RespondWithJSON(w, http.StatusOK, id)
 
 	}
 }

@@ -31,7 +31,7 @@ func (cmr *psqlCommentRepository) StoreComment(comment *domain.Comment) error {
 	return tx.Commit()
 }
 
-func (cmr *psqlCommentRepository) GetAllByTaskID(id string) ([]domain.Comment, error) {
+func (cmr *psqlCommentRepository) GetAllByTaskID(id uint) ([]domain.Comment, error) {
 
 	rows, err := cmr.db.Query("SELECT id, text, task_id FROM comment WHERE task_id=$1 ORDER BY created_at DESC", id)
 	if err != nil {
@@ -50,7 +50,7 @@ func (cmr *psqlCommentRepository) GetAllByTaskID(id string) ([]domain.Comment, e
 	return commentList, nil
 }
 
-func (cmr *psqlCommentRepository) DeleteByID(id string) error {
+func (cmr *psqlCommentRepository) DeleteByID(id uint) error {
 	_, err := cmr.db.Exec("DELETE FROM comment WHERE id=$1", id)
 	if err != nil {
 		return err
@@ -58,7 +58,7 @@ func (cmr *psqlCommentRepository) DeleteByID(id string) error {
 	return nil
 }
 
-func (cmr *psqlCommentRepository) DeleteAllByTaskID(id string) error {
+func (cmr *psqlCommentRepository) DeleteAllByTaskID(id uint) error {
 
 	_, err := cmr.db.Exec("DELETE FROM comment WHERE task_id=$1 RETURNING id", id)
 	if err != nil {

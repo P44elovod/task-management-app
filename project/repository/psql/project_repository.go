@@ -34,7 +34,7 @@ func (p *psqlProjectRepository) GetAll() ([]domain.Project, error) {
 	return progectList, nil
 }
 
-func (p *psqlProjectRepository) GetByID(id string) (domain.Project, error) {
+func (p *psqlProjectRepository) GetByID(id uint) (domain.Project, error) {
 
 	var project domain.Project
 	row, err := p.db.Query("SELECT id, name, description FROM project WHERE id = $1", id)
@@ -70,7 +70,7 @@ func (p *psqlProjectRepository) Store(project *domain.Project) error {
 	return tx.Commit()
 }
 
-func (p *psqlProjectRepository) DeleteByID(id string) error {
+func (p *psqlProjectRepository) DeleteByID(id uint) error {
 
 	_, err := p.db.Exec("DELETE FROM project WHERE id=$1", id)
 	if err != nil {

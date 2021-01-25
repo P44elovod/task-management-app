@@ -3,6 +3,7 @@ package projecthttpdelivery
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/P44elovod/task-management-app/domain"
 	"github.com/P44elovod/task-management-app/helpers"
@@ -31,7 +32,15 @@ func (p *ProjectHandler) GetByID() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		project, err := p.PUsecase.GetByID(vars["id"])
+
+		id, err := strconv.ParseUint(vars["id"], 10, 32)
+		if err != nil {
+			p.logger.Error(err, id)
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid column ID")
+			return
+		}
+
+		project, err := p.PUsecase.GetByID(uint(id))
 		if err != nil {
 			p.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusBadRequest, "Project request went wrong")
@@ -69,8 +78,7 @@ func (p *ProjectHandler) Create() http.HandlerFunc {
 			return
 		}
 
-		err := p.PUsecase.Create(&project)
-		if err != nil {
+		if err := p.PUsecase.Create(&project); err != nil {
 			p.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Rquested data is not reached")
 			return
@@ -87,8 +95,15 @@ func (p *ProjectHandler) DelByID() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		err := p.PUsecase.DeleteByID(vars["id"])
+
+		id, err := strconv.ParseUint(vars["id"], 10, 32)
 		if err != nil {
+			p.logger.Error(err, id)
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid column ID")
+			return
+		}
+
+		if err := p.PUsecase.DeleteByID(uint(id)); err != nil {
 			p.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Project hasn't been deleted")
 			return

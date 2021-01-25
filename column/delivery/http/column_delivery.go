@@ -119,7 +119,14 @@ func (c *ColumnHandler) DeleteByID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
-		if err := c.CUsecase.DeleteByID(vars["id"]); err != nil {
+		id, err := strconv.ParseUint(vars["id"], 10, 32)
+		if err != nil {
+			c.logger.Error(err, id)
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid column ID")
+			return
+		}
+
+		if err := c.CUsecase.DeleteByID(uint(id)); err != nil {
 			c.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Column hasn't been deleted")
 			return

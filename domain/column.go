@@ -10,18 +10,18 @@ type Column struct {
 
 type ColumnUsecase interface {
 	CreateColumn(column *Column) error
-	GetColumnsWithTasksByProjectID(id string) ([]Column, error)
-	DeleteByID(id string) error
+	GetColumnsWithTasksByProjectID(id uint) ([]Column, error)
+	DeleteByID(id uint) error
 	Update(column *Column) error
 	UpdatePosition(positionsList map[uint]uint) error
 }
 type ColumnRepository interface {
 	StoreColumn(column *Column) error
 	CheckColumnNameExists(name *string) bool
-	GetColumnsByProjectID(id string) ([]Column, error)
-	GetByID(id string) (Column, error)
+	GetColumnsByProjectID(id uint) ([]Column, error)
+	GetByID(id uint) (Column, error)
 	GetColumnIDByPositionAndProjectID(id, position uint) (uint, error)
-	DeleteByID(id string) error
+	DeleteByID(id uint) error
 	CheckIfLastColumn(projectID uint) bool
 	Update(column *Column) error
 	UpdatePositions(id, position uint) error

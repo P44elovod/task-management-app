@@ -39,8 +39,7 @@ func (th *TaskHandler) Create() http.HandlerFunc {
 			return
 		}
 
-		err := th.TUsecase.CreateTask(&task)
-		if err != nil {
+		if err := th.TUsecase.CreateTask(&task); err != nil {
 			th.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Task not created")
 			return
@@ -57,7 +56,15 @@ func (th *TaskHandler) GetByID() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		projectsList, err := th.TUsecase.GetTaskWithCommentByID(vars["id"])
+
+		id, err := strconv.ParseUint(vars["id"], 10, 32)
+		if err != nil {
+			th.logger.Error(err)
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid task ID")
+			return
+		}
+
+		projectsList, err := th.TUsecase.GetTaskWithCommentByID(uint(id))
 		if err != nil {
 			th.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusBadRequest, "Task request went wrong")
@@ -75,7 +82,7 @@ func (th *TaskHandler) UpdateByID() http.HandlerFunc {
 		id, err := strconv.ParseUint(vars["id"], 10, 32)
 		if err != nil {
 			th.logger.Error(err)
-			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid comment ID")
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid task ID")
 			return
 		}
 
@@ -102,14 +109,21 @@ func (th *TaskHandler) UpdateByID() http.HandlerFunc {
 func (th *TaskHandler) DeleteByID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		err := th.TUsecase.DeleteByID(vars["id"])
+
+		id, err := strconv.ParseUint(vars["id"], 10, 32)
 		if err != nil {
+			th.logger.Error(err)
+			helpers.RespondWithError(w, http.StatusBadRequest, "Invalid task ID")
+			return
+		}
+
+		if err := th.TUsecase.DeleteByID(uint(id)); err != nil {
 			th.logger.Error(err)
 			helpers.RespondWithError(w, http.StatusInternalServerError, "Comment hasn't been deleted")
 			return
 		}
 
-		helpers.RespondWithJSON(w, http.StatusOK, vars["id"])
+		helpers.RespondWithJSON(w, http.StatusOK, id)
 
 	}
 }
