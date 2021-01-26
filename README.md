@@ -12,17 +12,16 @@ Before start execute next commands:
 5. make for building app
 
 
-##############################
-Endpoints description
-##############################
+
+# Endpoints description
 
 
-#######
-Project actions
-#######
+## Project actions
+
 --------------------------------------------
 "POST"    /project/new - creates new project
 --------------------------------------------
+```json
 req:                                            
 content-type: application/json
 
@@ -30,6 +29,7 @@ content-type: application/json
     "name": string,
     "description": string
 }
+```
 
 --------------------------------------------------
 "GET"     /projects    - returns all projects list
@@ -38,6 +38,7 @@ content-type: application/json
 ---------------------------------------------------
 "PUT"     /project/id  - updates project name and description
 --------------------------------------------------------------
+```json
 req: 
 content-type: application/json
 
@@ -45,17 +46,18 @@ content-type: application/json
     "name":string,
     "description":string
 }
+```
 ---------------------------------------
 "DELETE"  /project/id  - delete project
 ---------------------------------------
 
 
-#######
-Column actions
-#######
+## Column actions
+
 -----------------------------------------------
 "POST"    /column/new      - creates new column
 -----------------------------------------------
+```json
 req:
 content-type: application/json
 
@@ -64,9 +66,11 @@ content-type: application/json
     "project_id": uint,
     "position":uint
 }
+```
 ------------------------------------------------
 "PUT"     /column/id       - updates column name
-------------------------------------------------------
+------------------------------------------------
+```json
 req:
 content-type: application/json
 
@@ -75,9 +79,11 @@ content-type: application/json
     "project_id": uint
     
 }
+```
 -----------------------------------------------------
 "PUT"     /column/position - updates columns positions
 ------------------------------------------------------
+```json
 req:
 content-type: application/json
 
@@ -95,16 +101,17 @@ content-type: application/json
     ]
  
 }
+```
 -------------------------------------------
 "DELETE"  /column/id       - delete column 
 -------------------------------------------
 
-#######
-Task actions
-#######
+## Task actions
+
 -------------------------------------------
 "POST"    /task/new      - creates new task
 -------------------------------------------
+```json
 req:
 content-type: application/json
 
@@ -116,6 +123,7 @@ content-type: application/json
     "description":string
 
 }
+```
 -----------------------------------------------------
 "GET"     /task/id       - returns task with comments
 -----------------------------------------------------
@@ -123,6 +131,7 @@ content-type: application/json
 ------------------------------------------------------------
 "PUT"     /task/id       - updates task description and name
 ------------------------------------------------------------
+```json
 req:
 content-type: application/json
 {
@@ -132,10 +141,11 @@ content-type: application/json
     "description":string
 
 }
-
+```
 ------------------------------------------------
 "PUT"     /task/priority - updates tasks pririty
 ------------------------------------------------
+```json
 req:
 content-type: application/json
 
@@ -154,13 +164,14 @@ content-type: application/json
     ]
  
 }
+```
 
-#######
-Comment actions
-#######
+## Comment actions
+
 --------------------------------------------
 "POST"    /comment/new - creates new comment
 ---------------------------------------------
+```json
 req:
 content-type: application/json
 
@@ -170,9 +181,11 @@ content-type: application/json
     "task_id": uint
 
 }
+```
 ----------------------------------------------
 "PUT"     /comment/id  - updates comment text
 ----------------------------------------------
+```json
 req:
 content-type: application/json
 
@@ -182,6 +195,7 @@ content-type: application/json
     "id": uint
 
 }
+```
 ----------------------------------------
 "DELETE"  /comment/id  - delete comment
 ----------------------------------------
