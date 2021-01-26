@@ -25,7 +25,6 @@ Project actions
 --------------------------------------------
 req:                                            
 content-type: application/json
-
 {
     "name": string,
     "description": string
@@ -40,7 +39,6 @@ content-type: application/json
 --------------------------------------------------------------
 req: 
 content-type: application/json
-
 {
     "name":string,
     "description":string
@@ -58,7 +56,6 @@ Column actions
 -----------------------------------------------
 req:
 content-type: application/json
-
 {
     "name":string,
     "project_id": uint,
@@ -69,18 +66,15 @@ content-type: application/json
 ------------------------------------------------------
 req:
 content-type: application/json
-
 {
     "name":string,
-    "project_id": uint
-    
+    "project_id": uint  
 }
 -----------------------------------------------------
 "PUT"     /column/position - updates columns positions
 ------------------------------------------------------
 req:
 content-type: application/json
-
 {   
     "positions":[
         {
@@ -93,7 +87,6 @@ content-type: application/json
             "position": new position - uint 
         }
     ]
- 
 }
 -------------------------------------------
 "DELETE"  /column/id       - delete column 
@@ -107,14 +100,11 @@ Task actions
 -------------------------------------------
 req:
 content-type: application/json
-
 {
-    
     "name":string,
     "column_id": uint,
     "priority":uint,
     "description":string
-
 }
 -----------------------------------------------------
 "GET"     /task/id       - returns task with comments
@@ -126,11 +116,9 @@ content-type: application/json
 req:
 content-type: application/json
 {
-    
     "name":string,
     "column_id": uint,
     "description":string
-
 }
 
 ------------------------------------------------
@@ -138,7 +126,6 @@ content-type: application/json
 ------------------------------------------------
 req:
 content-type: application/json
-
 {   
     "priorities":[
         {
@@ -152,7 +139,6 @@ content-type: application/json
 
         }
     ]
- 
 }
 
 #######
@@ -163,25 +149,23 @@ Comment actions
 ---------------------------------------------
 req:
 content-type: application/json
-
 {
-    
+  
     "text":string,
     "task_id": uint
-
 }
+
 ----------------------------------------------
 "PUT"     /comment/id  - updates comment text
 ----------------------------------------------
 req:
 content-type: application/json
-
 {
-    
+ 
    "text":string,
     "id": uint
-
 }
+
 ---------------------------------------
 "DELETE"  /comment/id  - delete comment
 ---------------------------------------
