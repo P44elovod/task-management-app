@@ -40,7 +40,7 @@ content-type: application/json
     "description":string
 }
 ```
-# "DELETE"  /project/id  - delete project
+### "DELETE"  /project/id  - delete project
 
 
 ## Column actions
