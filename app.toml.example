@@ -1,5 +1,7 @@
 #[config]
 server_port = ":port"
-log_level = ""
+log_level = ""(you could choose from: "info", "warning", "debug", "panic", "fatal" )
+
+
 
 db_url = "host= port= dbname= user= password= sslmode="
