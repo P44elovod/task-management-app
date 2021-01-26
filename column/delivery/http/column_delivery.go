@@ -22,7 +22,7 @@ func New(r *mux.Router, log *logrus.Logger, cu domain.ColumnUsecase) {
 		logger:   log,
 	}
 
-	r.HandleFunc("/column/new", handler.Create()).Methods("POST")
+	r.HandleFunc("/column", handler.Create()).Methods("POST")
 	r.HandleFunc("/column/{id:[0-9]+}", handler.UpdateByID()).Methods("PUT")
 	r.HandleFunc("/column/position", handler.UpdatePosiotion()).Methods("PUT")
 	r.HandleFunc("/column/{id:[0-9]+}", handler.DeleteByID()).Methods("DELETE")

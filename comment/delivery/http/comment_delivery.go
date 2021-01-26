@@ -24,7 +24,7 @@ func New(r *mux.Router, log *logrus.Logger, cmu domain.CommentUseCase, cmr domai
 		logger:    log,
 	}
 
-	r.HandleFunc("/comment/new", handler.Create()).Methods("POST")
+	r.HandleFunc("/comment", handler.Create()).Methods("POST")
 	r.HandleFunc("/comment/{id:[0-9]+}", handler.DeleteByID()).Methods("DELETE")
 	r.HandleFunc("/comment/{id:[0-9]+}", handler.UpdateByID()).Methods("PUT")
 

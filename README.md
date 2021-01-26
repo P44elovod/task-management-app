@@ -18,7 +18,7 @@ Before start execute next commands:
 
 ## Project actions
 
-### "POST"    /project/new - creates new project
+### "POST"    /project - creates new project
 #### req:
 ```json
 content-type: application/json
@@ -45,7 +45,7 @@ content-type: application/json
 
 ## Column actions
 
-### "POST"    /column/new      - creates new column
+### "POST"    /column      - creates new column
 #### req:
 ```json
 content-type: application/json
@@ -91,7 +91,7 @@ content-type: application/json
 
 ## Task actions
 
-### "POST"    /task/new      - creates new task
+### "POST"    /task      - creates new task
 #### req:
 ```json
 content-type: application/json
@@ -143,7 +143,7 @@ content-type: application/json
 
 ## Comment actions
 
-### "POST"    /comment/new - creates new comment
+### "POST"    /comment - creates new comment
 #### req:
 ```json
 content-type: application/json

@@ -22,7 +22,7 @@ func New(r *mux.Router, log *logrus.Logger, tu domain.TaskUseCase) {
 		logger:   log,
 	}
 
-	r.HandleFunc("/task/new", handler.Create()).Methods("POST")
+	r.HandleFunc("/task", handler.Create()).Methods("POST")
 	r.HandleFunc("/task/{id:[0-9]+}", handler.GetByID()).Methods("GET")
 	r.HandleFunc("/task/{id:[0-9]+}", handler.DeleteByID()).Methods("DELETE")
 	r.HandleFunc("/task/{id:[0-9]+}", handler.UpdateByID()).Methods("PUT")

@@ -26,7 +26,7 @@ func New(r *mux.Router, log *logrus.Logger, pu domain.ProjectUsecase) {
 	r.HandleFunc("/project/{id:[0-9]+}", handler.GetByID()).Methods("GET")
 	r.HandleFunc("/project/{id:[0-9]+}", handler.DelByID()).Methods("DELETE")
 	r.HandleFunc("/project/{id:[0-9]+}", handler.UpdateByID()).Methods("PUT")
-	r.HandleFunc("/project/new", handler.Create()).Methods("POST")
+	r.HandleFunc("/project", handler.Create()).Methods("POST")
 
 }
 
