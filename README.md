@@ -18,11 +18,9 @@ Before start execute next commands:
 
 ## Project actions
 
---------------------------------------------
-"POST"    /project/new - creates new project
---------------------------------------------
+### "POST"    /project/new - creates new project
+#### req:
 ```json
-req:                                            
 content-type: application/json
 
 {
@@ -30,16 +28,11 @@ content-type: application/json
     "description": string
 }
 ```
-
---------------------------------------------------
-"GET"     /projects    - returns all projects list
----------------------------------------------------
-"GET"     /project/id  - returns project with tasks 
----------------------------------------------------
-"PUT"     /project/id  - updates project name and description
---------------------------------------------------------------
+### "GET"     /projects    - returns all projects list
+### "GET"     /project/id  - returns project with tasks 
+### "PUT"     /project/id  - updates project name and description
+#### req:
 ```json
-req: 
 content-type: application/json
 
 {
@@ -47,18 +40,14 @@ content-type: application/json
     "description":string
 }
 ```
----------------------------------------
-"DELETE"  /project/id  - delete project
----------------------------------------
+# "DELETE"  /project/id  - delete project
 
 
 ## Column actions
 
------------------------------------------------
-"POST"    /column/new      - creates new column
------------------------------------------------
+### "POST"    /column/new      - creates new column
+#### req:
 ```json
-req:
 content-type: application/json
 
 {
@@ -67,11 +56,9 @@ content-type: application/json
     "position":uint
 }
 ```
-------------------------------------------------
-"PUT"     /column/id       - updates column name
-------------------------------------------------
+### "PUT"     /column/id       - updates column name
+#### req:
 ```json
-req:
 content-type: application/json
 
 {
@@ -80,11 +67,9 @@ content-type: application/json
     
 }
 ```
------------------------------------------------------
-"PUT"     /column/position - updates columns positions
-------------------------------------------------------
+### "PUT"     /column/position - updates columns positions
+#### req:
 ```json
-req:
 content-type: application/json
 
 {   
@@ -102,17 +87,13 @@ content-type: application/json
  
 }
 ```
--------------------------------------------
-"DELETE"  /column/id       - delete column 
--------------------------------------------
+### "DELETE"  /column/id       - delete column 
 
 ## Task actions
 
--------------------------------------------
-"POST"    /task/new      - creates new task
--------------------------------------------
+### "POST"    /task/new      - creates new task
+#### req:
 ```json
-req:
 content-type: application/json
 
 {
@@ -124,15 +105,11 @@ content-type: application/json
 
 }
 ```
------------------------------------------------------
-"GET"     /task/id       - returns task with comments
------------------------------------------------------
-"DELETE"  /task/id       - delete task with comments
-------------------------------------------------------------
-"PUT"     /task/id       - updates task description and name
-------------------------------------------------------------
+### "GET"     /task/id       - returns task with comments
+### "DELETE"  /task/id       - delete task with comments
+### "PUT"     /task/id       - updates task description and name
+#### req:
 ```json
-req:
 content-type: application/json
 {
     
@@ -142,11 +119,9 @@ content-type: application/json
 
 }
 ```
-------------------------------------------------
-"PUT"     /task/priority - updates tasks pririty
-------------------------------------------------
+### "PUT"     /task/priority - updates tasks pririty
+#### req:
 ```json
-req:
 content-type: application/json
 
 {   
@@ -168,11 +143,9 @@ content-type: application/json
 
 ## Comment actions
 
---------------------------------------------
-"POST"    /comment/new - creates new comment
----------------------------------------------
+### "POST"    /comment/new - creates new comment
+#### req:
 ```json
-req:
 content-type: application/json
 
 {
@@ -182,11 +155,9 @@ content-type: application/json
 
 }
 ```
-----------------------------------------------
-"PUT"     /comment/id  - updates comment text
-----------------------------------------------
+### "PUT"     /comment/id  - updates comment text
+#### req:
 ```json
-req:
 content-type: application/json
 
 {
@@ -196,6 +167,4 @@ content-type: application/json
 
 }
 ```
-----------------------------------------
-"DELETE"  /comment/id  - delete comment
-----------------------------------------
+### "DELETE"  /comment/id  - delete comment
