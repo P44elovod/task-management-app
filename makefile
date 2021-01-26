@@ -1,3 +1,5 @@
+buid:
+	go run ./cmd/main.go
 run:
 	go run ./cmd/main.go
 postgres:
@@ -14,6 +16,6 @@ migrateup:
 	migrate -path migrations -database "postgresql://root:pass@localhost:5432/tmdb?sslmode=disable" -verbose up
 migratedown:
 	migrate -path migrations -database "postgresql://root:pass@localhost:5432/tmdb?sslmode=disable" -verbose down
-.PHONY: run
+.PHONY: run, buid
 
-.DEFAULT_GOAL := run
+.DEFAULT_GOAL := buid
